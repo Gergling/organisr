@@ -1,18 +1,9 @@
-import { NavLink, Route, Routes, useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { TransactionManagerGDrive } from "../../transaction-manager-gdrive";
 import { TransactionFileUpload } from "../../transaction-file-upload";
-import { Tab, Tabs } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { TabBody, TabConfigItemProps, TabList, useTabs } from "../../../shared/tabs";
 
-type TransactionManagerTabProps = {
-  element: JSX.Element;
-  idx: number;
-  index?: boolean;
-  path: string;
-  tabText: string;
-};
-
-const tabs: TransactionManagerTabProps[] = [
+const tabs: TabConfigItemProps[] = [
   {
     element: <TransactionFileUpload />,
     index: true,
@@ -27,29 +18,8 @@ const tabs: TransactionManagerTabProps[] = [
 ].map((tab, idx) => ({ ...tab, idx }));
 
 export const TransactionManagerView = () => {
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const tabData = useTabs(tabs);
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-
-  const tabFound = useMemo(
-    () => tabs.find(({ path }) => path === pathname),
-    [pathname]
-  );
-
-  useEffect(() => {
-    if (tabFound) {
-      setSelectedTab(tabFound.idx);
-    } else {
-      setSelectedTab(0);
-    }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!tabFound) {
-      const [{ path }] = tabs;
-      navigate(path);
-    }
-  }, [selectedTab]);
 
   return (
     <div>
@@ -59,18 +29,8 @@ export const TransactionManagerView = () => {
       <div>
         ({pathname})
       </div>
-      <Tabs value={selectedTab}>
-        {tabs.map(({ path, tabText }) => <Tab
-          key={path}
-          label={<NavLink to={path}>{tabText}</NavLink>}
-        />)}
-      </Tabs>
-      <Routes>
-        {tabs.map(({ element, index, path }) => <Route
-          key={path}
-          path={path} index={index} element={element}
-        />)}
-      </Routes>
+      <TabList {...tabData} />
+      <TabBody {...tabData} />
     </div>
   );
 };
