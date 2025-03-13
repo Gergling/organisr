@@ -5,7 +5,7 @@ import { TabList } from "./TabList";
 
 const TabBody = ({ tabs }: RoutingTabListProps) => (
   <>
-    {tabs.map((tab) => <View tabRouting={tab} />)}
+    {tabs.map((tab) => <View key={tab.path} tabRouting={tab} />)}
   </>
 );
 
