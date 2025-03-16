@@ -2,8 +2,7 @@ name: setup
 description: Run setup
 runs:
   using: "composite"
-  steps:
-    # Will want to template these steps separately at some point. 
+  steps: 
     - uses: actions/checkout@v3
     - name: Setup Node
       uses: actions/setup-node@v4
