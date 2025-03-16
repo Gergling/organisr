@@ -8,10 +8,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+
+      - name: Lint
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: lint
+
       - name: Run the type check
         uses: borales/actions-yarn@v4
         with:
           cmd: type-check
+
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
         with:
