@@ -1,6 +1,5 @@
 on:
-  pull_request:
-    types: [opened, synchronize]
+  - pull_request
 
 jobs:
   quality_checks:
@@ -9,7 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - name: Run the type check
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: type-check
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
         with:
-          cmd: test # will run `yarn test` command
+          cmd: test
