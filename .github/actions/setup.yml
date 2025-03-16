@@ -1,6 +1,7 @@
 name: setup
 description: Run setup
 runs:
+  using: "composite"
   steps:
     # Will want to template these steps separately at some point. 
     - uses: actions/checkout@v3
