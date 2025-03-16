@@ -12,7 +12,7 @@ jobs:
       - name: Lint
         uses: borales/actions-yarn@v4
         with:
-          cmd: lint
+          cmd: lint --max-warnings=0
 
       - name: Run the type check
         uses: borales/actions-yarn@v4
