@@ -1,27 +1,18 @@
 on:
-  pull_request:
-    types: [opened, synchronize]
+  - pull_request
 
 jobs:
   quality_checks:
     name: Run Quality Checks
     runs-on: ubuntu-22.04
     steps:
-      # Will want to template these steps separately at some point. 
-      - uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-      - name: Install packages
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run the type check
         uses: borales/actions-yarn@v4
         with:
-          cmd: install
-      # End of potential template. (?)
-      - name: Echo
-        run: |
-          echo 'This command only outputs this message.'
+          cmd: type-check
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
         with:
-          cmd: test # will run `yarn test` command
+          cmd: test
