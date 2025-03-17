@@ -5,6 +5,8 @@ jobs:
   quality_checks:
     name: Run Quality Checks
     runs-on: ubuntu-22.04
+    # env:
+    #   Failure: false
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
@@ -25,3 +27,8 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: test
+
+      - name: A step has failed
+        # if: ${{ env.Failure }} != false
+        if: failure()
+        run: exit 1
