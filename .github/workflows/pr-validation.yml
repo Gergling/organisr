@@ -5,7 +5,7 @@ jobs:
   quality_checks:
     name: Run Quality Checks
     runs-on: ubuntu-22.04
-    continue-on-error: true
+    # continue-on-error: true
     # env:
     #   Failure: false
     steps:
@@ -15,21 +15,21 @@ jobs:
       - name: Lint
         uses: borales/actions-yarn@v4
         id: lint
-        # continue-on-error: true
+        continue-on-error: true
         with:
           cmd: lint --max-warnings=0
 
       - name: Run the type check
         uses: borales/actions-yarn@v4
         id: type-check
-        # continue-on-error: true
+        continue-on-error: true
         with:
           cmd: type-check
 
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
         id: unit-tests
-        # continue-on-error: true
+        continue-on-error: true
         with:
           cmd: test
 
