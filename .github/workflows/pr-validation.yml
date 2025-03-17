@@ -5,37 +5,24 @@ jobs:
   quality_checks:
     name: Run Quality Checks
     runs-on: ubuntu-22.04
-    # continue-on-error: true
-    # env:
-    #   Failure: false
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
 
       - name: Lint
         uses: borales/actions-yarn@v4
-        id: lint
         continue-on-error: true
         with:
           cmd: lint --max-warnings=0
 
       - name: Run the type check
         uses: borales/actions-yarn@v4
-        id: type-check
         continue-on-error: true
         with:
           cmd: type-check
 
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
-        id: unit-tests
         continue-on-error: true
         with:
           cmd: test
-
-      - name: A step has failed
-        continue-on-error: false
-        # if: ${{ env.Failure }} != false
-        # if: failure()
-        if: contains(fromJson('[steps.lint.outcome, steps.type-check.outcome, steps.unit-tests.outcome]'), 'failed')
-        run: exit 1
