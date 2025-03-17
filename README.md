@@ -1,8 +1,6 @@
-For `tsconfig.json`:
+This is my first attempt at implementing `electron`, so all of this is extremely experimental.
 
-```
-    "paths": {
-      "@renderer/*": ["src/renderer/*"],
-      "@shared/*": ["src/shared/*"]
-    },
-```
+If that doesn't scare you, feel free to:
+1. Clone the repo.
+2. Run `yarn`
+3. Run `yarn start`
