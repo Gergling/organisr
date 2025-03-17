@@ -8,14 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Snyk monitor
-        uses: snyk/actions/node@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
-
       - uses: ./.github/actions/setup
 
       - name: Lint
