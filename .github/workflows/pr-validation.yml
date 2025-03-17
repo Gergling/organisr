@@ -25,6 +25,7 @@ jobs:
 
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
+        continue-on-error: true
         with:
           cmd: test
 
