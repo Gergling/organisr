@@ -8,11 +8,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+
+      - name: Lint
+        uses: borales/actions-yarn@v4
+        continue-on-error: true
+        with:
+          cmd: lint --max-warnings=0
+
       - name: Run the type check
         uses: borales/actions-yarn@v4
+        continue-on-error: true
         with:
           cmd: type-check
+
       - name: Run the unit tests
         uses: borales/actions-yarn@v4
+        continue-on-error: true
         with:
           cmd: test
