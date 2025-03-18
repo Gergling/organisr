@@ -6,6 +6,9 @@ jobs:
     name: Run Checks
     runs-on: ubuntu-22.04
     needs: [lint, type-check, unit-tests]
+    steps:
+      - run: |
+          echo Checks complete!
 
   lint:
     uses: ./.github/workflows/quality-check.yml
