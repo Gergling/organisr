@@ -12,6 +12,7 @@ jobs:
     name: Quality Check
     runs-on: ubuntu-22.04
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
 
       - uses: borales/actions-yarn@v4
