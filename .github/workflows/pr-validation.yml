@@ -1,28 +1,30 @@
 on:
   - pull_request
 
+# Once all the commands pass, these can be made
+# to run sequentially and block merges.
+
 jobs:
-  quality_checks:
-    name: Run Quality Checks
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
+  lint:
+    uses: ./.github/workflows/quality-check.yml
+    name: Lint
+    with:
+      cmd: lint --max-warnings=0
 
-      - name: Lint
-        uses: borales/actions-yarn@v4
-        continue-on-error: true
-        with:
-          cmd: lint --max-warnings=0
+  type-check:
+    uses: ./.github/workflows/quality-check.yml
+    name: Type Check
+    with:
+      cmd: type-check
 
-      - name: Run the type check
-        uses: borales/actions-yarn@v4
-        continue-on-error: true
-        with:
-          cmd: type-check
+  unit-tests:
+    uses: ./.github/workflows/quality-check.yml
+    name: Run unit tests
+    with:
+      cmd: test
 
-      - name: Run the unit tests
-        uses: borales/actions-yarn@v4
-        continue-on-error: true
-        with:
-          cmd: test
+  unused-export-check:
+    uses: ./.github/workflows/quality-check.yml
+    name: Check for unused exports
+    with:
+      cmd: unused-export-check
