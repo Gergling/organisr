@@ -1,29 +1,24 @@
 on:
   - pull_request
 
-jobs:
-  checks:
-    name: Run Checks
-    runs-on: ubuntu-22.04
-    needs: [lint, type-check, unit-tests]
-    steps:
-      - run: |
-          echo Checks complete!
+# Once all the commands pass, these can be made
+# to run sequentially and block merges.
 
+jobs:
   lint:
     uses: ./.github/workflows/quality-check.yml
+    name: Lint
     with:
       cmd: lint --max-warnings=0
-      name: Lint
 
   type-check:
     uses: ./.github/workflows/quality-check.yml
+    name: Type Check
     with:
       cmd: type-check
-      name: Type Check
 
   unit-tests:
     uses: ./.github/workflows/quality-check.yml
+    name: Run unit tests
     with:
       cmd: test
-      name: Run unit tests
