@@ -2,27 +2,25 @@ on:
   - pull_request
 
 jobs:
-  quality_checks:
-    name: Run Quality Checks
+  checks:
+    name: Run Checks
     runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
+    needs: [lint, type-check, unit-tests]
 
-      - name: Lint
-        uses: borales/actions-yarn@v4
-        continue-on-error: true
-        with:
-          cmd: lint --max-warnings=0
+  lint:
+    uses: ./.github/workflows/quality-check.yml
+    with:
+      cmd: lint --max-warnings=0
+      name: Lint
 
-      - name: Run the type check
-        uses: borales/actions-yarn@v4
-        continue-on-error: true
-        with:
-          cmd: type-check
+  type-check:
+    uses: ./.github/workflows/quality-check.yml
+    with:
+      cmd: type-check
+      name: Type Check
 
-      - name: Run the unit tests
-        uses: borales/actions-yarn@v4
-        continue-on-error: true
-        with:
-          cmd: test
+  unit-tests:
+    uses: ./.github/workflows/quality-check.yml
+    with:
+      cmd: test
+      name: Run unit tests
