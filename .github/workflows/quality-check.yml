@@ -9,13 +9,11 @@ on:
 
 jobs:
   quality_check:
-    name: Quality check
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
 
-      - name: Quality check
-        uses: borales/actions-yarn@v4
+      - uses: borales/actions-yarn@v4
         with:
           cmd: ${{ inputs.cmd }}
