@@ -22,3 +22,9 @@ jobs:
     name: Run unit tests
     with:
       cmd: test
+
+  unused-export-check:
+    uses: ./.github/workflows/quality-check.yml
+    name: Check for unused exports
+    with:
+      cmd: unused-export-check
