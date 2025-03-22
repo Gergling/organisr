@@ -42,6 +42,7 @@ export class FinancialTransactionCollection extends DatabaseCollection<
 
   static getFieldNames(forInsert: boolean) {
     const fieldNames: (keyof FinancialTransactionModel)[] = [
+      'account_temporary',
       'date',
       'description',
       'meta',

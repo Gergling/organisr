@@ -13,21 +13,22 @@ const getTransactionFromHalifaxCurrent = (
   // TODO: Ultimately will want to loop a "checklist" of signature headers for the
   // CSV before we get to this function so we can confirm the data maps properly.
   // There is a github issue somewhere for this.
+  const account_temporary = csvTransaction['Account Number'];
   const [day, month, year] = csvTransaction['Transaction Date'].split('/');
   const date = [year, month, day].join('-');
   const credit = +csvTransaction['Credit Amount'];
   const debit = +csvTransaction['Debit Amount'];
   const net = credit - debit;
   const meta = [
-    'Account Number',
     'Balance',
     'Credit Amount',
     'Debit Amount',
-    'Sort Code',
+    // 'Sort Code',
     'Transaction Type',
   ].map((fieldName) => `${fieldName}:${csvTransaction[fieldName]}`).join(',')
 
   const transaction: FinancialTransactionModelProps = {
+    account_temporary, // TODO: Ensure security is good.
     date,
     description: csvTransaction['Transaction Description'],
     meta,
