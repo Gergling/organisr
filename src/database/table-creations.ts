@@ -6,6 +6,7 @@ export default [
     name TEXT NOT NULL
   )`,
   `CREATE TABLE IF NOT EXISTS transactions (
+    account_temporary TEXT NOT NULL,
     date TEXT NOT NULL,
     description TEXT NOT NULL,
     id INTEGER PRIMARY KEY,
