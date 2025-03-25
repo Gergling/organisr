@@ -1,3 +1,5 @@
+// TODO: I'm pretty sure this is dead code.
+
 import { MonthlyAccountNet, MonthlyAccountNetChartable } from "../types";
 import { getAggregateTransactionNetSum } from "./get-aggregate-transaction-net-sum";
 

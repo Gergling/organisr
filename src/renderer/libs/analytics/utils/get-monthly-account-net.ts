@@ -1,3 +1,5 @@
+// TODO: I'm pretty sure this is dead code.
+
 import { FinancialTransactionModelProps } from "../../../../database/financial/transactions";
 import { MonthlyAccountNet } from "../types";
 

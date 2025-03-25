@@ -1,3 +1,5 @@
+// TODO: I'm pretty sure this is dead code.
+
 import { MonthlyAccountNet } from "../types";
 
 export const getMonthlyAccountNetComparison = (
