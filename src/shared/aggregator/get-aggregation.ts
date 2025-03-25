@@ -2,8 +2,10 @@ type KeyGenerator<ItemProps> = (item: ItemProps) => string;
 type Reducer<AggregatedProps, ItemProps> = (
   aggregation: AggregatedProps,
   item: ItemProps,
-  idx: number,
-  key: string,
+  metadata: {
+    idx: number,
+    key: string,
+  },
 ) => AggregatedProps;
 
 type Aggregation<ItemProps, AggregatedProps> = {
@@ -34,7 +36,7 @@ export const getAggregation = <ItemProps, AggregatedProps>(
     aggregationMapping[key] = {
       ...aggregation,
       items: [...aggregation.items, item],
-      values: reducer(aggregation.values, item, idx, key),
+      values: reducer(aggregation.values, item, { idx, key }),
     };
   });
 

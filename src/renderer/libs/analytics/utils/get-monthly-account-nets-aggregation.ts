@@ -19,7 +19,7 @@ export const getMonthlyAccountNetsAggregation = (
       const [year, month] = date.split('-');
       return [year, month].join('-');
     },
-    (aggregation, { account_temporary, net }, idx, key) => {
+    (aggregation, { account_temporary, net }, { key }) => {
       return {
         ...aggregation,
         accounts: {
