@@ -7,12 +7,7 @@ export const getMonthlyAccountNetsAggregation = (
 ): MonthlyAccountNetChartable[] => {
   const aggregation = getAggregation<
     FinancialTransactionModelProps,
-    {
-      accounts: {
-        [accountName: string]: number;
-      };
-      month: string;
-    }
+    MonthlyAccountNetChartable
   >(
     rawTransactions,
     ({ date }) => {
