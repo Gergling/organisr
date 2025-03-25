@@ -34,7 +34,7 @@ const robots: Robot[] = [
   },
   {
     build: 'humanoid',
-    selfSealingStemBolts: 9,
+    selfSealingStemBolts: 3,
     model: 'Data',
   }
 ];
@@ -44,7 +44,7 @@ describe('getAggregation', () => {
     const meanStemBoltsByBuild = getAggregation<Robot, { meanStemBolts: number; }>(
       robots,
       ({ build }) => build,
-      (aggregation, robot, idx) => {
+      (aggregation, robot, { idx }) => {
         const meanStemBolts = (aggregation.meanStemBolts || 0) * idx;
         aggregation.meanStemBolts = (
           meanStemBolts + robot.selfSealingStemBolts
