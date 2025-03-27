@@ -1,4 +1,5 @@
 import { AnalyticsView } from "../libs/analytics";
+import { TransactionBreakdown } from "../libs/transaction-breakdown";
 import { TransactionFileUpload } from "../libs/transaction-file-upload";
 import { TransactionManagerView } from "../libs/transaction-manager";
 import { TransactionManagerGDrive } from "../libs/transaction-manager-gdrive";
@@ -40,14 +41,14 @@ export const routing = getRouting({
                   tabText: 'Manual Entry',
                 },
                 {
+                  element: <TransactionBreakdown />,
+                  path: 'breakdown',
+                  tabText: 'List',
+                },
+                {
                   element: <TransactionManagerGDrive />,
                   path: 'google-drive-download',
                   tabText: 'Google Drive Download',
-                },
-                {
-                  element: <>Testy McTestington</>,
-                  path: 'test',
-                  tabText: 'Test',
                 },
               ],
             },
