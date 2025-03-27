@@ -1,9 +1,8 @@
 import { DatasetType } from '@mui/x-charts/internals';
 import { LineChart, LineChartProps } from '@mui/x-charts/LineChart';
-import { usePreloadIPC } from '../../../shared/preload-ipc-context/use-preload-ipc';
-import { useEffect, useState } from 'react';
 import { FinancialTransactionModelProps } from '../../../../database/financial/transactions';
 import { getMonthlyAccountNetsAggregation } from '../utils';
+import { useQueryTransactions } from '../../transaction-data';
 
 const colors = [
   'blue',
@@ -21,26 +20,6 @@ const stackStrategy = {
 const customize = {
   height: 300,
   margin: { top: 5 },
-};
-
-const useQueryTransactions = () => {
-  const [transactions, setTransactions] = useState<FinancialTransactionModelProps[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const {
-    fetchFinancialTransactions,
-  } = usePreloadIPC();
-  useEffect(() => {
-    setIsLoading(true);
-    fetchFinancialTransactions()
-      .then((transactions) => setTransactions(transactions))
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  return {
-    isLoading,
-    transactions,
-  };
 };
 
 const useMonthlyGrowthChart = (

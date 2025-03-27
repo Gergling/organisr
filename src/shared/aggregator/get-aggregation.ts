@@ -8,7 +8,7 @@ type Reducer<AggregatedProps, ItemProps> = (
   },
 ) => AggregatedProps;
 
-type Aggregation<ItemProps, AggregatedProps> = {
+export type Aggregation<ItemProps, AggregatedProps> = {
   key: string;
   items: ItemProps[];
   values: AggregatedProps;
