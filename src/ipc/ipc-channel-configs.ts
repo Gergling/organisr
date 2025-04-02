@@ -1,9 +1,11 @@
 import { Database } from "sqlite3";
 import { IPCChannelConfigProps } from "./types/ipc-channel-config-props";
+import { FinancialTransactionsModelProps, insertFinancialTransactions } from "../database/financial/transactions";
 import {
-  FinancialTransactionCollection,
-  FinancialTransactionModel
-} from "../database/financial/transactions";
+  FinancialTransactionCategoriesModelProps,
+  insertFinancialTransactionCategories,
+  selectFinancialTransactionCategories
+} from "../database/financial/transaction-categories";
 
 export const ipcChannelConfigs: IPCChannelConfigProps[] = [
   {
@@ -20,12 +22,27 @@ export const ipcChannelConfigs: IPCChannelConfigProps[] = [
     channelName: 'financial-transactions-add',
     invocationName: 'addFinancialTransactions',
     setupMainHandler: (database: Database) =>
-      (_, transactions: FinancialTransactionModel[]) => FinancialTransactionCollection.insert(database, transactions),
+      (_, transactions: FinancialTransactionsModelProps[]) =>
+        insertFinancialTransactions(database, transactions),
   },
   {
     channelName: 'financial-transactions-get',
     invocationName: 'fetchFinancialTransactions',
     setupMainHandler: (database: Database) =>
-      () => FinancialTransactionCollection.select(database),
+      () => selectFinancialTransactionCategories(database),
+  },
+
+  {
+    channelName: 'financial-transaction-categories-add',
+    invocationName: 'addFinancialTransactions',
+    setupMainHandler: (database: Database) =>
+      (_, category: FinancialTransactionCategoriesModelProps) =>
+        insertFinancialTransactionCategories(database, [category]),
+  },
+  {
+    channelName: 'financial-transaction-categories-get',
+    invocationName: 'fetchFinancialTransactions',
+    setupMainHandler: (database: Database) =>
+      () => selectFinancialTransactionCategories(database),
   },
 ];
