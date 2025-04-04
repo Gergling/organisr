@@ -1,6 +1,6 @@
 // TODO: This could probably be its own library.
 
-import { FinancialTransactionModelProps } from "../../../../database/financial/transactions";
+import { FinancialTransactionsModelProps } from "../../../../database/financial/transactions";
 
 const LARGEST_POSSIBLE_PRIME = 9007199254740881; // Apparently
 const ROOT_PRIME = Math.sqrt(LARGEST_POSSIBLE_PRIME);
@@ -47,7 +47,7 @@ const numberGen = ({
 
 const currencyGen = (n: number) => Math.round(n * 100) / 100;
 
-export const mockTransactions: FinancialTransactionModelProps[] = mockData.map(([
+export const mockTransactions: FinancialTransactionsModelProps[] = mockData.map(([
   account_temporary,
   date,
   mockNetMultiplier,

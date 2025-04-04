@@ -5,12 +5,12 @@ import { renderHook } from '@testing-library/react';
 import { usePreloadIPC } from './use-preload-ipc';
 // import { getWindow } from '../window/get-window';
 import { IPCRendererExposedProps } from '../../../shared/ipc/types/ipc-preload-props';
-import { FinancialTransactionModelProps } from '../../../database/financial/transactions';
+import { FinancialTransactionsModelProps } from '../../../database/financial/transactions';
 
 jest.mock('../window/get-window', () => {
   const ipc: IPCRendererExposedProps = {
     addFinancialTransactions: () => new Promise(() => { /* ... */ }),
-    fetchFinancialTransactions: () => new Promise<FinancialTransactionModelProps[]>(() => { /* ... */ }),
+    fetchFinancialTransactions: () => new Promise<FinancialTransactionsModelProps[]>(() => { /* ... */ }),
     ipcTest: () => new Promise(() => { /* ... */ }),
   };
   return {

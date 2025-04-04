@@ -5,7 +5,7 @@ import { useQueryTransactions } from "../../transaction-data"
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { Aggregation, getAggregation } from "../../../../shared/aggregator";
-import { FinancialTransactionModelProps } from "../../../../database/financial/transactions";
+import { FinancialTransactionsModelProps } from "../../../../database/financial/transactions";
 import { Dropdown } from "../../../shared/dropdown";
 // TODO: Apparently we've completely rewritten this, so... this is awkward...
 // The credit/debit, etc aren't featured.
@@ -23,17 +23,17 @@ type FinancialTransactionYearAggregation = {
 };
 type FinancialTransactionAggregation = FinancialTransactionYearAggregation & {
   monthBreakdown: (Omit<FinancialTransactionMonthAggregation, 'year'> & {
-    transactions: FinancialTransactionModelProps[];
+    transactions: FinancialTransactionsModelProps[];
   })[];
 }
 
 const getTransactionDateComparison = (
-  a: FinancialTransactionModelProps,
-  b: FinancialTransactionModelProps
+  a: FinancialTransactionsModelProps,
+  b: FinancialTransactionsModelProps
 ) => Temporal.PlainDate.compare(a.date, b.date);
 
-const getMonthAggregation = (transactions: FinancialTransactionModelProps[]) => getAggregation<
-  FinancialTransactionModelProps,
+const getMonthAggregation = (transactions: FinancialTransactionsModelProps[]) => getAggregation<
+  FinancialTransactionsModelProps,
   FinancialTransactionMonthAggregation
 >(
   transactions,
@@ -59,12 +59,12 @@ const getMonthAggregation = (transactions: FinancialTransactionModelProps[]) => 
 
 const getYearAggregation = (
   monthAggregations: Aggregation<
-    FinancialTransactionModelProps,
+    FinancialTransactionsModelProps,
     FinancialTransactionMonthAggregation
   >[]
 ) => getAggregation<
   Aggregation<
-    FinancialTransactionModelProps,
+    FinancialTransactionsModelProps,
     FinancialTransactionMonthAggregation
   >,
   FinancialTransactionYearAggregation
@@ -95,7 +95,7 @@ const getYearAggregation = (
 // it? Mainly we just wanted a list of transactions we can edit/delete
 // later.
 const getTransactionbreakdownAggregation = (
-  transactions: FinancialTransactionModelProps[]
+  transactions: FinancialTransactionsModelProps[]
 ): FinancialTransactionAggregation[] => {
   const monthAggregation = getMonthAggregation(transactions);
   const yearAggregation = getYearAggregation(monthAggregation);

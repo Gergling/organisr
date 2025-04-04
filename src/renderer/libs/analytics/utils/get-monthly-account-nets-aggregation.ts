@@ -1,12 +1,12 @@
 import { getAggregation } from "../../../../shared/aggregator";
-import { FinancialTransactionModelProps } from "../../../../database/financial/transactions";
+import { FinancialTransactionsModelProps } from "../../../../database/financial/transactions";
 import { MonthlyAccountNetChartable } from "../types";
 
 export const getMonthlyAccountNetsAggregation = (
-  rawTransactions: FinancialTransactionModelProps[],
+  rawTransactions: FinancialTransactionsModelProps[],
 ): MonthlyAccountNetChartable[] => {
   const aggregation = getAggregation<
-    FinancialTransactionModelProps,
+    FinancialTransactionsModelProps,
     MonthlyAccountNetChartable
   >(
     rawTransactions,

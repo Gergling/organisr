@@ -34,14 +34,16 @@ export const ipcChannelConfigs: IPCChannelConfigProps[] = [
 
   {
     channelName: 'financial-transaction-categories-add',
-    invocationName: 'addFinancialTransactions',
+    invocationName: 'addFinancialTransactionCategories',
     setupMainHandler: (database: Database) =>
-      (_, category: FinancialTransactionCategoriesModelProps) =>
-        insertFinancialTransactionCategories(database, [category]),
+      (_, categories: FinancialTransactionCategoriesModelProps[]) =>{
+        console.log(categories)
+        return insertFinancialTransactionCategories(database, categories);
+      },
   },
   {
     channelName: 'financial-transaction-categories-get',
-    invocationName: 'fetchFinancialTransactions',
+    invocationName: 'fetchFinancialTransactionCategories',
     setupMainHandler: (database: Database) =>
       () => selectFinancialTransactionCategories(database),
   },
