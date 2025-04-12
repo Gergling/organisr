@@ -1,6 +1,8 @@
 import { FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 
 export type Category = {
-  data: FinancialTransactionCategoriesModelProps;
+  data: Omit<FinancialTransactionCategoriesModelProps, 'id'> & {
+    id: number;
+  };
   path: string;
 }

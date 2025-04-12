@@ -34,6 +34,7 @@ export const useTransactionCategories = () => {
   const {
     addFinancialTransactionCategories,
     fetchFinancialTransactionCategories,
+    updateFinancialTransactionCategory,
   } = usePreloadIPC();
   const refetch = () => {
     setIsLoading(true);
@@ -50,6 +51,7 @@ export const useTransactionCategories = () => {
 
   return {
     addFinancialTransactionCategories,
+    update: updateFinancialTransactionCategory,
     categories,
     isLoading,
     refetch,

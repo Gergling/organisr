@@ -1,14 +1,19 @@
 import { Button, TextField } from "@mui/material";
-import { ChangeEvent, useMemo, useState } from "react";
-import { FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { FinancialTransactionCategoriesModelInsertionProps, FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 import { Dropdown } from "../../../shared/dropdown";
-import { Category } from "../types/category";
+import { useParentCategoryDropdown } from "../hooks";
+import { Category } from "../types";
+import { getCategoryFindFactory } from "../utils";
+
+type Model = FinancialTransactionCategoriesModelProps |
+  FinancialTransactionCategoriesModelInsertionProps;
 
 type EditCategoryProps = {
   categories: Category[];
   categoryId?: number;
   onCancel: () => void;
-  onSave: (categoryData: FinancialTransactionCategoriesModelProps) => void;
+  onSave: (categoryData: Model) => void;
 };
 
 export const EditCategory = ({
@@ -18,36 +23,53 @@ export const EditCategory = ({
   onSave,
 }: EditCategoryProps) => {
   const [categoryName, setCategoryName] = useState('');
-  const [categoryParent, setCategoryParent] = useState<number | undefined>(undefined);
-  const parentOptions = useMemo(
-    () => categories.map(({ data: { name } }) => name),
-    [categories],
+  const category = useMemo(
+    () => categoryId ? categories.find(getCategoryFindFactory(categoryId)) : undefined,
+    [categories, categoryId]
   );
+  const {
+    handleParentCategorySelection,
+    parentCategoryOptions,
+    selectedParentCategory,
+  } = useParentCategoryDropdown(categories, category);
 
-  const handleCategorySelection = (
-    idx: number
-  ) => setCategoryParent(categories[idx].data.id);
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCategoryName(event.target.value);
+  const handleCategoryNameChange = ({ target: { value }}: ChangeEvent<HTMLInputElement>) => {
+    setCategoryName(value);
+  };
+  const handleRevert = () => {
+    // Reset everything to props, I guess.
   };
   const handleSave = () => {
     console.log('saving', categoryName)
-    onSave({ name: categoryName, parent_id: categoryParent, id: categoryId });
+    const forInsertion = typeof categoryId === 'undefined';
+    const parent_id = selectedParentCategory?.data.id;
+    const baseCategoryData = { name: categoryName, parent_id };
+    const extendedCategoryData = forInsertion
+      ? { forInsertion }
+      : { forInsertion, id: categoryId };
+    onSave({ ...baseCategoryData, ...extendedCategoryData });
   };
+
+  useEffect(() => {
+    if (category) {
+      setCategoryName(category.data.name);
+    }
+  }, [category])
 
   return (
     <>
       <TextField
-        label="Outlined"
-        variant="outlined"
+        label="Category Name"
+        // variant="outlined"
         value={categoryName}
-        onChange={handleChange}
+        onChange={handleCategoryNameChange}
       />
       <Dropdown
-        options={parentOptions}
-        onSelect={handleCategorySelection}
+        options={parentCategoryOptions}
+        onSelect={handleParentCategorySelection}
       />
       <Button onClick={onCancel}>Cancel</Button>
+      <Button onClick={handleRevert}>Revert</Button>
       <Button onClick={handleSave}>Save</Button>
     </>
   );

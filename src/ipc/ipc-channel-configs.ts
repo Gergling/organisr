@@ -4,7 +4,8 @@ import { FinancialTransactionsModelProps, insertFinancialTransactions } from "..
 import {
   FinancialTransactionCategoriesModelProps,
   insertFinancialTransactionCategories,
-  selectFinancialTransactionCategories
+  selectFinancialTransactionCategories,
+  updateFinancialTransactionCategory
 } from "../database/financial/transaction-categories";
 
 export const ipcChannelConfigs: IPCChannelConfigProps[] = [
@@ -46,5 +47,14 @@ export const ipcChannelConfigs: IPCChannelConfigProps[] = [
     invocationName: 'fetchFinancialTransactionCategories',
     setupMainHandler: (database: Database) =>
       () => selectFinancialTransactionCategories(database),
+  },
+  {
+    channelName: 'financial-transaction-categories-update',
+    invocationName: 'updateFinancialTransactionCategory',
+    setupMainHandler: (database: Database) =>
+      (_, category: FinancialTransactionCategoriesModelProps) => {
+        console.log(category)
+        return updateFinancialTransactionCategory(database, category);
+      },
   },
 ];

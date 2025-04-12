@@ -1,8 +1,15 @@
 import { Box, Button, Modal } from "@mui/material";
-import { useState } from "react";
-import { FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
+import { useMemo, useState } from "react";
+import { FinancialTransactionCategoriesModelInsertionProps, FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 import { useTransactionCategories } from "../hooks";
 import { EditCategory } from "./EditCategory";
+
+type ModalState = {
+  type: 'closed' | 'create',
+} | {
+  type: 'edit',
+  categoryId: number;
+};
 
 const style = {
   position: 'absolute',
@@ -17,37 +24,58 @@ const style = {
 };
 
 export const TransactionCategories = () => {
-  const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [modalState, setModalState] = useState<ModalState>({ type: 'closed' });
   const {
     addFinancialTransactionCategories,
+    update,
     categories,
     refetch,
   } = useTransactionCategories();
+  const modalOpen = useMemo(() => modalState.type !== 'closed', [modalState]);
+  const categoryId: number | undefined = useMemo(
+    () => modalState.type === 'edit' ? modalState.categoryId : undefined,
+    [modalState]
+  );
 
-  const handleCreateModalOpen = () => setCreateModalIsOpen(true);
-  const handleCreateModalClose = () => setCreateModalIsOpen(false);
-  const handleSave = (
-    categoryData: FinancialTransactionCategoriesModelProps
-  ) => addFinancialTransactionCategories([categoryData]).then(() => {
-    handleCreateModalClose();
+  const handleModalClose = () => setModalState({ type: 'closed' });
+  const handleModalCreate = () => setModalState({ type: 'create' });
+  const handleModalEditFactory = (
+    categoryId: number
+  ) => () => setModalState({ type: 'edit', categoryId });
+
+  const handleSave = async (
+    categoryData: FinancialTransactionCategoriesModelInsertionProps | FinancialTransactionCategoriesModelProps
+  ) => {
+    try {
+      if (!categoryData.forInsertion) {
+        await update(categoryData);
+      } else {
+        await addFinancialTransactionCategories([categoryData]);
+      }
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+    handleModalClose();
     refetch();
-  });
+  };
 
   return (
     <>
       <Modal
-        open={createModalIsOpen}
-        onClose={handleCreateModalClose}
+        open={modalOpen}
+        onClose={handleModalClose}
       >
         <Box sx={style} component="form">
           <EditCategory
+            categoryId={categoryId}
             categories={categories}
-            onCancel={handleCreateModalClose}
+            onCancel={handleModalClose}
             onSave={handleSave}
           />
         </Box>
       </Modal>
-      <Button onClick={handleCreateModalOpen}>Create</Button>
+      <Button onClick={handleModalCreate}>Create</Button>
       <div>
         {categories.length === 0
           ? <>No categories</>
@@ -64,6 +92,7 @@ export const TransactionCategories = () => {
                   ({id})
                   {parent_id}:
                   {path}
+                  <Button onClick={handleModalEditFactory(id)}>Edit</Button>
                 </li>
               ))}
             </ul>
