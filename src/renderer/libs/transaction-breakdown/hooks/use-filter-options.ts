@@ -3,9 +3,13 @@ import { FinancialTransactionBreakdownAggregation } from "../types";
 
 const SELECT_ALL = 'All';
 
-// const useNumericFilterOptions = () => {
-
-// }
+const handleNumericSelectionFactory = (
+  options: string[],
+  setNumericSelection: (selection: number | null) => void,
+) => (idx: number) => {
+  const selected = +options[idx];
+  setNumericSelection(Number.isNaN(selected) ? null : selected);
+};
 
 export const useTransactionBreakdownFilterOptions = (
   yearGroups: FinancialTransactionBreakdownAggregation[],
@@ -38,17 +42,11 @@ export const useTransactionBreakdownFilterOptions = (
         .map(({ month }) => month.toString())
       ).flat())],
     ],
-    [yearGroups],
+    [filterYearGroups],
   );
 
-  const handleFilterYearSelection = (idx: number) => {
-    const selectedYear = +filterYearOptions[idx];
-    setFilterYear(Number.isNaN(selectedYear) ? null : selectedYear);
-  };
-  const handleFilterMonthSelection = (idx: number) => {
-    const selectedMonth = +filterMonthOptions[idx];
-    setFilterMonth(Number.isNaN(selectedMonth) ? null : selectedMonth);
-  };
+  const handleFilterMonthSelection = handleNumericSelectionFactory(filterMonthOptions, setFilterMonth);
+  const handleFilterYearSelection = handleNumericSelectionFactory(filterYearOptions, setFilterYear);
 
   return {
     handleFilterMonthSelection,
