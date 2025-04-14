@@ -22,7 +22,8 @@ export const financialTransactionCategoriesDatabaseTableConfig: FinancialTransac
     >>({
       localFieldName: 'parent_id',
       foreignTable: FINANCIAL_TRANSACTION_CATEGORIES_DATABASE_TABLE_NAME,
-      foreignTableFieldName: 'id',
+      foreignTableKeyFieldName: 'id',
+      foreignTableSelectFieldNames: [],
     }),
   ],
   name: FINANCIAL_TRANSACTION_CATEGORIES_DATABASE_TABLE_NAME,

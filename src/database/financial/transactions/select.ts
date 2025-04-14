@@ -1,9 +1,22 @@
 import { getSelectFactory } from "../../shared";
 import { financialTransactionsDatabaseTableConfig } from "./config";
-import { FinancialTransactionsModelProps } from "./types";
+import {
+  FinancialTransactionModelFetchMappingProps,
+  FinancialTransactionsModelProps
+} from "./types";
 
 export const selectFinancialTransactions = getSelectFactory<
-  FinancialTransactionsModelProps
+  FinancialTransactionsModelProps,
+  FinancialTransactionModelFetchMappingProps
 >(
-  financialTransactionsDatabaseTableConfig
+  financialTransactionsDatabaseTableConfig,
+  ({
+    local,
+    joins: [
+      { fieldValues: { name } }
+    ],
+  }) => ({
+    ...local,
+    categoryName: name,
+  })
 );

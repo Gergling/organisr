@@ -7,17 +7,15 @@ type BaseModelPrimaryKey = {
 type BaseModelData = {
   name: string;
   parent_id?: number;
-  forInsertion: boolean;
 }
 
-export type FinancialTransactionCategoriesModelProps = BaseModelData
-  & BaseModelPrimaryKey
-  & { forInsertion: false };
+type BaseModel = BaseModelData & BaseModelPrimaryKey;
+
+export type FinancialTransactionCategoriesModelProps = BaseModel;
 
 export type FinancialTransactionCategoriesModelInsertionProps = BaseModelData
-  & Partial<BaseModelPrimaryKey>
-  & { forInsertion: true };
+  & Partial<BaseModelPrimaryKey>;
 
 export type FinancialTransactionCategoriesTableConfigProps = TableConfigProps<
-  FinancialTransactionCategoriesModelProps
+  BaseModel
 >;

@@ -3,14 +3,14 @@ import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { FinancialTransactionCategoriesModelInsertionProps, FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 import { Dropdown } from "../../../shared/dropdown";
 import { useParentCategoryDropdown } from "../hooks";
-import { Category } from "../types";
 import { getCategoryFindFactory } from "../utils";
+import { FinancialTransactionCategory } from "../types";
 
 type Model = FinancialTransactionCategoriesModelProps |
   FinancialTransactionCategoriesModelInsertionProps;
 
 type EditCategoryProps = {
-  categories: Category[];
+  categories: FinancialTransactionCategory[];
   categoryId?: number;
   onCancel: () => void;
   onSave: (categoryData: Model) => void;

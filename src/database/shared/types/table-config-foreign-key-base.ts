@@ -1,5 +1,6 @@
 export type TableConfigForeignKeyBaseProps = {
   foreignTable: string;
-  foreignTableFieldName: string;
+  foreignTableKeyFieldName: string;
+  foreignTableSelectFieldNames: string[];
   localFieldName: string;
 };

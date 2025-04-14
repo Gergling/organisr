@@ -2,8 +2,14 @@ import { TableConfigForeignKeyBaseProps } from "./types/table-config-foreign-key
 
 export const getReferenceSchema = <
   TableConfigForeignKeyProps extends TableConfigForeignKeyBaseProps
->({ foreignTable, foreignTableFieldName, localFieldName }: TableConfigForeignKeyProps): TableConfigForeignKeyBaseProps => ({
+>({
   foreignTable,
-  foreignTableFieldName,
+  foreignTableKeyFieldName,
+  foreignTableSelectFieldNames,
+  localFieldName
+}: TableConfigForeignKeyProps): TableConfigForeignKeyBaseProps => ({
+  foreignTable,
+  foreignTableKeyFieldName,
+  foreignTableSelectFieldNames,
   localFieldName,
 });

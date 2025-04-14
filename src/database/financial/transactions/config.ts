@@ -29,9 +29,10 @@ export const financialTransactionsDatabaseTableConfig: TableConfig = {
   },
   foreignKeys: [
     getReferenceSchema<TableConfigCategoryReference>({
-      localFieldName: 'category_id',
       foreignTable: FINANCIAL_TRANSACTION_CATEGORIES_DATABASE_TABLE_NAME,
-      foreignTableFieldName: 'id',
+      foreignTableKeyFieldName: 'id',
+      foreignTableSelectFieldNames: ['name'],
+      localFieldName: 'category_id',
     })
   ],
   name: FINANCIAL_TRANSACTIONS_DATABASE_TABLE_NAME,

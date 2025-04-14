@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 import { usePreloadIPC } from "../../../shared/preload-ipc-context";
-import { Category } from "../types/category";
+import { FinancialTransactionCategory } from "../types";
 
 const getCategoryPath = (
   { parent_id, name }: FinancialTransactionCategoriesModelProps,
@@ -19,7 +19,10 @@ const getCategoryPath = (
   return name;
 };
 
-const compareCategories = (a: Category, b: Category) => a.path.localeCompare(b.path);
+const compareCategories = (
+  a: FinancialTransactionCategory,
+  b: FinancialTransactionCategory
+) => a.path.localeCompare(b.path);
 
 const getCategories = (
   categories: FinancialTransactionCategoriesModelProps[]
@@ -29,7 +32,7 @@ const getCategories = (
 })).sort(compareCategories);
 
 export const useTransactionCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<FinancialTransactionCategory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     addFinancialTransactionCategories,

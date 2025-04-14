@@ -7,3 +7,7 @@ export type FinancialTransactionsModelProps = {
   meta: string;
   net: number;
 };
+
+export type FinancialTransactionModelFetchMappingProps = FinancialTransactionsModelProps & {
+  categoryName: string;
+};

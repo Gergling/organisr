@@ -1,16 +1,16 @@
 import { useCallback, useMemo, useState } from "react";
-import { Category } from "../types";
 import { getCategoryDescendants, getCategoryFindFactory } from "../utils";
+import { FinancialTransactionCategory } from "../types";
 
 type DropdownParentCategory = {
-  category?: Category;
+  category?: FinancialTransactionCategory;
   label: string;
   root: boolean;
 }
 
 const useParentCategoryDropdownEdit = (
-  categories: Category[],
-  category: Category | undefined,
+  categories: FinancialTransactionCategory[],
+  category: FinancialTransactionCategory | undefined,
 ) => {
   const initialParentCategory = useMemo(
     () => category && category.data.parent_id !== undefined
@@ -18,7 +18,7 @@ const useParentCategoryDropdownEdit = (
       : undefined,
     [categories, category, getCategoryFindFactory],
   );
-  const descendants: Category[] = useMemo(
+  const descendants: FinancialTransactionCategory[] = useMemo(
     () => category ? getCategoryDescendants(category, categories) : [],
     [categories, category, getCategoryDescendants],
   );
@@ -60,15 +60,15 @@ const useParentCategoryDropdownEdit = (
 };
 
 export const useParentCategoryDropdown = (
-  categories: Category[],
-  category: Category | undefined, // Undefined if we're adding a new one.
+  categories: FinancialTransactionCategory[],
+  category: FinancialTransactionCategory | undefined, // Undefined if we're adding a new one.
 ) => {
   const {
     getIsValidCategory,
     initialParentCategories,
     initialParentCategory,
   } = useParentCategoryDropdownEdit(categories, category);
-  const [selectedParentCategory, setSelectedParentCategory] = useState<Category | undefined>(initialParentCategory);
+  const [selectedParentCategory, setSelectedParentCategory] = useState<FinancialTransactionCategory | undefined>(initialParentCategory);
   const dropdownCategories = useMemo(
     () => categories
       .sort((a, b) => a.path.localeCompare(b.path))

@@ -1,7 +1,10 @@
 import { Box, Button, Modal } from "@mui/material";
 import { useMemo, useState } from "react";
-import { FinancialTransactionCategoriesModelInsertionProps, FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 import { useTransactionCategories } from "../hooks";
+import {
+  FinancialTransactionCategoriesModelInsertionProps,
+  FinancialTransactionCategoriesModelProps
+} from "../types";
 import { EditCategory } from "./EditCategory";
 
 type ModalState = {
