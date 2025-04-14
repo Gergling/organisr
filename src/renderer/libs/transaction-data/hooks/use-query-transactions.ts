@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { FinancialTransactionsModelProps } from "../../../../database/financial/transactions";
+import { FinancialTransactionModelFetchMappingProps } from "../../../../database/financial/transactions";
 import { usePreloadIPC } from "../../../shared/preload-ipc-context/use-preload-ipc";
 
 export const useQueryTransactions = () => {
-  const [transactions, setTransactions] = useState<FinancialTransactionsModelProps[]>([]);
+  const [transactions, setTransactions] = useState<FinancialTransactionModelFetchMappingProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     fetchFinancialTransactions,

@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { FinancialTransactionCollection } from "../database/financial/transactions";
+// import { FinancialTransactionCollection } from "../database/financial/transactions";
 import { Database } from "sqlite3";
 import { ipcChannelConfigs } from "./ipc-channel-configs";
 

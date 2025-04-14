@@ -2,6 +2,7 @@ import { IPC_EXPOSURE_PROPERTY_NAME } from "../../../ipc/ipc-constants";
 import {
   FinancialTransactionCategoriesModelInsertionProps,
   FinancialTransactionCategoriesModelProps,
+  FinancialTransactionModelFetchMappingProps,
   FinancialTransactionsModelProps
 } from "../../../database/financial";
 import { IPCMutationResponse } from "./";
@@ -11,7 +12,7 @@ export type IPCRendererExposedProps = {
 
   addFinancialTransactions: (transactions: FinancialTransactionsModelProps[]) =>
     Promise<IPCMutationResponse>;
-  fetchFinancialTransactions: () => Promise<FinancialTransactionsModelProps[]>;
+  fetchFinancialTransactions: () => Promise<FinancialTransactionModelFetchMappingProps[]>;
 
   addFinancialTransactionCategories: (categories: FinancialTransactionCategoriesModelInsertionProps[]) =>
     Promise<IPCMutationResponse>;
