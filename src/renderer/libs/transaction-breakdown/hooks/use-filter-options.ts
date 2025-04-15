@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react";
-import { FinancialTransactionBreakdownAggregation } from "../types";
+import { FinancialTransactionBreakdownAggregation, TransactionBreakdownFilterProps } from "../types";
+
+type FilterOptionsProps = TransactionBreakdownFilterProps & {
+  aggregation: FinancialTransactionBreakdownAggregation[];
+};
 
 const SELECT_ALL = 'All';
 
@@ -13,11 +17,11 @@ const handleNumericSelectionFactory = (
 
 export const useTransactionBreakdownFilterOptions = (
   yearGroups: FinancialTransactionBreakdownAggregation[],
-) => {
+): FilterOptionsProps => {
   const [filterYear, setFilterYear] = useState<number | null>(null);
   const [filterMonth, setFilterMonth] = useState<number | null>(null);
 
-  const filterYearGroups = useMemo(
+  const aggregation = useMemo(
     () => filterYear
       ? yearGroups
         .filter(({ year }) => year === filterYear)
@@ -38,21 +42,21 @@ export const useTransactionBreakdownFilterOptions = (
   const filterMonthOptions = useMemo(
     () => [
       SELECT_ALL, 
-      ...[...new Set(filterYearGroups.map(({ monthBreakdown }) => monthBreakdown
+      ...[...new Set(aggregation.map(({ monthBreakdown }) => monthBreakdown
         .map(({ month }) => month.toString())
       ).flat())],
     ],
-    [filterYearGroups],
+    [aggregation],
   );
 
   const handleFilterMonthSelection = handleNumericSelectionFactory(filterMonthOptions, setFilterMonth);
   const handleFilterYearSelection = handleNumericSelectionFactory(filterYearOptions, setFilterYear);
 
   return {
+    aggregation,
+    filterMonthOptions,
+    filterYearOptions,
     handleFilterMonthSelection,
     handleFilterYearSelection,
-    filterMonthOptions,
-    filterYearGroups,
-    filterYearOptions,
   };
 };

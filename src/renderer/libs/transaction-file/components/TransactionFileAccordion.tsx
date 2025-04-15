@@ -1,6 +1,6 @@
 import { ExpandMore } from "@mui/icons-material";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
-import { getTransactionGroups, TransactionList, TransactionListYearGroup } from "../../transaction-list";
+import { getTransactionGroups, TransactionListDeprecating, TransactionListYearGroup } from "../../transaction-list";
 import { getGeneralAccountTransaction, TransactionFileData } from "../../transaction-manager";
 import { useMemo } from "react";
 import { getSortedTransactions } from "../../transaction-list/utils/get-sorted-transactions";
@@ -83,7 +83,7 @@ export const TransactionFileAccordion = ({
         {getFormattedCurrency(aggregates.debit)} mean monthly debit
       </AccordionSummary>
       <AccordionDetails>
-        {data && <TransactionList yearGroups={yearGroups} />}
+        {data && <TransactionListDeprecating yearGroups={yearGroups} />}
       </AccordionDetails>
     </Accordion>
   );
