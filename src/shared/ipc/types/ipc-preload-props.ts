@@ -13,6 +13,8 @@ export type IPCRendererExposedProps = {
   addFinancialTransactions: (transactions: FinancialTransactionsModelProps[]) =>
     Promise<IPCMutationResponse>;
   fetchFinancialTransactions: () => Promise<FinancialTransactionModelFetchMappingProps[]>;
+  fetchFinancialTransaction: (transactionId: number) => Promise<FinancialTransactionModelFetchMappingProps>;
+  updateFinancialTransaction: (transactionId: number, categoryId: number | undefined) => Promise<IPCMutationResponse>;
 
   addFinancialTransactionCategories: (categories: FinancialTransactionCategoriesModelInsertionProps[]) =>
     Promise<IPCMutationResponse>;

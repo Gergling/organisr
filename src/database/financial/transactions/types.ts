@@ -1,13 +1,23 @@
-export type FinancialTransactionsModelProps = {
+type PrimaryKeyProps = {
+  id: number;
+};
+
+type ValueProps = {
   account_temporary: string;
-  category_id?: number;
+  category_id: number | null;
   date: string;
   description: string;
-  id?: number;
   meta: string;
   net: number;
 };
 
-export type FinancialTransactionModelFetchMappingProps = FinancialTransactionsModelProps & {
-  categoryName: string;
-};
+// TODO: Ideally I would ensure the config nullables match the type nullables, but it can wait.
+type ForeignValueProps = {
+  categoryName: string | null;
+}
+
+export type FinancialTransactionsModelProps = PrimaryKeyProps & ValueProps;
+
+export type FinancialTransactionModelInsertionProps = Partial<PrimaryKeyProps> & ValueProps;
+
+export type FinancialTransactionModelFetchMappingProps = FinancialTransactionsModelProps & ForeignValueProps;

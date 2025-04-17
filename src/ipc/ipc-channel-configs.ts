@@ -1,6 +1,11 @@
 import { Database } from "sqlite3";
 import { IPCChannelConfigProps } from "./types/ipc-channel-config-props";
-import { FinancialTransactionsModelProps, insertFinancialTransactions, selectFinancialTransactions } from "../database/financial/transactions";
+import {
+  FinancialTransactionsModelProps,
+  insertFinancialTransactions,
+  selectFinancialTransactions,
+  updateFinancialTransaction
+} from "../database/financial/transactions";
 import {
   FinancialTransactionCategoriesModelProps,
   insertFinancialTransactionCategories,
@@ -32,6 +37,14 @@ export const ipcChannelConfigs: IPCChannelConfigProps[] = [
     setupMainHandler: (database: Database) =>
       () => selectFinancialTransactions(database),
   },
+  {
+    channelName: 'financial-transactions-update',
+    invocationName: 'updateFinancialTransaction',
+    setupMainHandler: (database: Database) =>
+      (_, id: number, category_id: number | undefined) => {
+        return updateFinancialTransaction(database, { category_id }, { id });
+      },
+  },
 
   {
     channelName: 'financial-transaction-categories-add',
@@ -52,9 +65,13 @@ export const ipcChannelConfigs: IPCChannelConfigProps[] = [
     channelName: 'financial-transaction-categories-update',
     invocationName: 'updateFinancialTransactionCategory',
     setupMainHandler: (database: Database) =>
-      (_, category: FinancialTransactionCategoriesModelProps) => {
-        console.log(category)
-        return updateFinancialTransactionCategory(database, category);
+      (_, { id, name, parent_id }: FinancialTransactionCategoriesModelProps) => {
+        const setCriteria: Pick<FinancialTransactionCategoriesModelProps, 'name' | 'parent_id'> = {
+          name,
+          parent_id,
+        };
+        const whereCriteria: Pick<FinancialTransactionCategoriesModelProps, 'id'> = { id };
+        return updateFinancialTransactionCategory(database, setCriteria, whereCriteria);
       },
   },
 ];

@@ -1,35 +1,33 @@
 import { Database } from "sqlite3";
 import { TableConfigProps } from "./types";
-import { getTableConfigFieldNames } from "./get-fields";
 
 export const getUpdateFactory = <
   Model,
 >(
-  { name, fields }: TableConfigProps<Model>,
+  { name }: TableConfigProps<Model>,
 ) => {
-  const {
-    fieldNames,
-    primaryKeys,
-  } = getTableConfigFieldNames<Model>(fields);
-  const getExpression = (
-    fieldName: keyof Model,
-  ): string => `${fieldName.toString()} = ?`;
+  const getStatementQuery = (data: Partial<Model>) => Object.keys(data)
+    .map((fieldName) => `${fieldName} = ?`);
 
   return async (
     database: Database,
-    data: Model,
+    setCriteria: Partial<Model>,
+    whereCriteria: Partial<Model>,
   ) => {
-    const setStatementQuery = fieldNames.map(getExpression).join(', ');
-    const whereStatementQuery = primaryKeys.map(getExpression).join(' AND ');
+    // TODO: Should catch empty set criteria.
+    // Like, if there's no set criteria, why are we calling the function?
+    const setStatementQuery = getStatementQuery(setCriteria).join(', ');
+    const whereStatementQuery = getStatementQuery(whereCriteria).join(' AND ');
     const statementSQL = `
       UPDATE ${name}
       SET ${setStatementQuery}
       WHERE ${whereStatementQuery}
     `;
-    const preparedStatementValues = [
-      ...fieldNames,
-      ...primaryKeys,
-    ].map((fieldName) => data[fieldName]);
+    const modelData: Partial<Model> = {
+      ...setCriteria,
+      ...whereCriteria
+    };
+    const preparedStatementValues = Object.values(modelData);
 
     return new Promise<void>((resolve, reject) => {
       const statement = database.prepare(statementSQL, (error) => {
@@ -44,7 +42,7 @@ export const getUpdateFactory = <
 
       statement.run(preparedStatementValues, (error) => {
         if (error) {
-          console.error(error);
+          console.error(statementSQL, preparedStatementValues, error);
           reject({
             message: error.message,
             type: 'update-statement-failed',

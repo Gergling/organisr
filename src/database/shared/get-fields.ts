@@ -1,24 +1,6 @@
 import { getConfigDef } from "./get-config-def";
 import { TableConfigFieldUnionProps, TableConfigProps } from "./types";
 
-export const getTableConfigFields = <Model>(
-  fields: TableConfigProps<Model>['fields'],
-  omitPrimaryKey: boolean,
-) => {
-  const fieldNames: (keyof Model)[] = [];
-  
-  Object
-    .entries<TableConfigFieldUnionProps>(fields)
-    .forEach(([fieldName, fieldDefinition]) => {
-      const { primaryKey } = getConfigDef(fieldDefinition);
-      if (!primaryKey || !omitPrimaryKey) {
-        fieldNames.push(fieldName as keyof Model);
-      }
-    });
-
-  return fieldNames;
-};
-
 export const getTableConfigFieldNames = <Model>(
   fields: TableConfigProps<Model>['fields']
 ) => {

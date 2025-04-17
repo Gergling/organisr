@@ -1,6 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { TransactionListProps } from "../types";
+import { TransactionListTable } from "./Table";
 
 export const TransactionList = ({
   aggregation,
@@ -31,15 +32,7 @@ export const TransactionList = ({
                   {month}: {net}
                 </AccordionSummary>
                 <AccordionDetails>
-                  <ol>
-                    {transactions.map(({
-                      // category_id,
-                      categoryName,
-                      date,
-                      description,
-                      net,
-                    }, idx) => <li key={idx}>{date.toString()}: {net}, {description} {categoryName}</li>)}
-                  </ol>
+                  <TransactionListTable transactions={transactions} />
                 </AccordionDetails>
               </Accordion>
             )}
