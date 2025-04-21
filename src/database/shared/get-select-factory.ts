@@ -124,6 +124,21 @@ export const getSelectFactory = <Model, Mapping>(
   tableConfig: TableConfigProps<Model>,
   mapRow: MapRowFunction<Model, Mapping>,
 ) => {
+  // TODO: This will not work if a select query is required for the foreign table.
+  const getStatementQuery = (data: Partial<Model>) => Object.keys(data)
+    .map((fieldName) => `${tableConfig.name}.${fieldName} = ?`);
+
+  const getStatementComponents = (whereCriteria?: Partial<Model>) => {
+    if (whereCriteria) {
+      const whereStatementQuery = getStatementQuery(whereCriteria).join(' AND ');
+      const statementSQL = `${sql} WHERE ${whereStatementQuery}`;
+      const preparedStatementValues = Object.values(whereCriteria);
+
+      return { statementSQL, preparedStatementValues };
+    }
+
+    return { statementSQL: sql, preparedStatementValues: {} };
+  };
   const {
     foreignValueTableMappings,
     sql,
@@ -136,17 +151,34 @@ export const getSelectFactory = <Model, Mapping>(
 
   return (
     database: Database,
+    whereCriteria?: Partial<Model>,
   ) => new Promise<Mapping[]>((resolve, reject) => {
-    database.all<FlatRow<Model>>(
-      sql,
-      (error, rows) => {
-        if (error) {
-          console.error(sql);
-          reject(error);
-        }
+    // Run the select quyery as a prepared statement.
+    // TODO: This menthod of handling statements needs change.
+    const {
+      preparedStatementValues,
+      statementSQL,
+    } = getStatementComponents(whereCriteria);
+    const statement = database.prepare(statementSQL, (error) => {
+      if (error) {
+        console.error(error);
+        reject({
+          message: error.message,
+          type: 'select-prepare-failed',
+        });
+      }
+    });
 
-        resolve(rows.map(getDataRecord));
-      },
-    );
+    statement.all<FlatRow<Model>>(preparedStatementValues, (error, rows) => {
+      if (error) {
+        console.error(statementSQL, preparedStatementValues, error);
+        reject({
+          message: error.message,
+          type: 'select-all-failed',
+        });
+      }
+
+      resolve(rows.map(getDataRecord))
+    });
   });  
 };

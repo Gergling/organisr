@@ -1,12 +1,15 @@
+import { useEffect, useMemo, useState } from "react";
 import { Button, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { FinancialTransactionModelFetchMappingProps } from "../../../../database/financial";
-import { TransactionCategoriesSearchOptions } from "../../transaction-categories/components/SearchOptions";
-import { useMemo, useState } from "react";
-import { useQueryTransaction } from "../../transaction-data";
+import { FinancialTransactionCategory, TransactionCategoriesSearchOptions } from "../../transaction-categories";
+import { useTransactionMutation, useTransactionQuery } from "../../transaction-data";
+
+type CategoryId = FinancialTransactionModelFetchMappingProps['category_id'];
 
 type ControlProps = {
-  categoryId: FinancialTransactionModelFetchMappingProps['category_id'];
-  closeControl: () => void;
+  categoryId: CategoryId;
+  onCancel: () => void;
+  onDone: (categoryId: CategoryId) => void;
   transactionId: FinancialTransactionModelFetchMappingProps['id'];
 };
 
@@ -21,18 +24,23 @@ type TableProps = {
 
 const Control = ({
   categoryId,
-  closeControl,
+  onCancel,
+  onDone,
 }: ControlProps) => {
-  // Clicking done should assign the category id to the transaction.
-  // Both buttons should close the control.
+  const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId>(categoryId);
+  const handleCategoryChange = (category: FinancialTransactionCategory | undefined) => {
+    const updatedCategoryId = category ? category.data.id : null;
+    setSelectedCategoryId(updatedCategoryId);
+  };
+  const handleDone = () => onDone(selectedCategoryId);
   return (
     <>
       <TransactionCategoriesSearchOptions
-        handleCategoryChange={console.log}
+        handleCategoryChange={handleCategoryChange}
         selectedCategoryId={categoryId}
       />
-      <Button onClick={closeControl}>Done</Button>
-      <Button onClick={closeControl}>Cancel</Button>
+      <Button onClick={handleDone}>Done</Button>
+      <Button onClick={onCancel}>Cancel</Button>
     </>
   );
 }
@@ -47,25 +55,40 @@ const Row = ({
   id,
   net,
 }: RowProps) => {
-  // TODO: It would be smart to update this individual transaction, and then only run a retrieval (select query) against this individual transaction.
-  // We have the id, so...
-  // const {
-  //   refetch
-  // } = useQueryTransaction(id);
-  // console.log(  category_id,
-  //   categoryName,
-  //   date,
-  //   description,
-  //   edit,
-  //   net,
-  // );
-  const dayOfMonth = date.split('-')[2];
-  const buttonText = useMemo(() => category_id === null ? '(Uncategorised)' : categoryName, [category_id]);
-  // category button should show the currently selected category (or lack thereof) and on clicking bring up a searchable dropdown of categories which aren't already assigned
-  // list should include the option to create the category
-  // editing the category itself might be out of scope, but if there's a neat place to put the button, decouple the existing category editing component accordingly
-  // in fact, editing existing categories without the proper interface might be explicitly a bad idea.
-  // Bringing up a modal for that wouldn't be too bad.
+  const {
+    mutateTransaction,
+  } = useTransactionMutation();
+  const {
+    transaction,
+    fetchTransaction,
+  } = useTransactionQuery();
+  const dayOfMonth = useMemo(() => date.split('-')[2], [date]);
+  const buttonText = useMemo(() => {
+    const getCategoryName = (
+      dataCategoryName: FinancialTransactionModelFetchMappingProps['categoryName']
+    ) => dataCategoryName ? dataCategoryName : '(Uncategorised)';
+
+    if (transaction) {
+      return getCategoryName(transaction.categoryName);
+    }
+
+    return getCategoryName(categoryName);
+  }, [categoryName, transaction?.categoryName]);
+  const [updatedCategoryId, setUpdatedCategoryId] = useState<undefined | CategoryId>();
+  const handleClose = () => handleEditState(false);
+  const handleOpenCategorisationControl = () => handleEditState(true);
+  const handleUpdateCategory = (categoryId: CategoryId) => {
+    mutateTransaction(id, categoryId === null ? undefined : categoryId);
+    handleClose();
+    setUpdatedCategoryId(categoryId);
+  };
+
+  useEffect(() => {
+    if(updatedCategoryId !== undefined) {
+      fetchTransaction(id);
+    }
+  }, [id, updatedCategoryId]);
+
   return (
     <TableRow>
       <TableCell>{dayOfMonth}</TableCell>
@@ -74,8 +97,13 @@ const Row = ({
       <TableCell>
         {(
           edit
-          ? <Control categoryId={category_id} closeControl={() => handleEditState(false)} transactionId={id} />
-          : <Button onClick={() => handleEditState(true)}>{buttonText}</Button>
+          ? <Control
+              categoryId={category_id}
+              onCancel={handleClose}
+              onDone={handleUpdateCategory}
+              transactionId={id}
+            />
+          : <Button onClick={handleOpenCategorisationControl}>{buttonText || '(blank)'}</Button>
         )}
       </TableCell>
     </TableRow>

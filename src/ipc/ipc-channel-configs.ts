@@ -25,6 +25,12 @@ export const ipcChannelConfigs: IPCChannelConfigProps[] = [
   },
 
   {
+    channelName: 'financial-transaction-get',
+    invocationName: 'fetchFinancialTransaction',
+    setupMainHandler: (database: Database) =>
+      (_, id: number) => selectFinancialTransactions(database, { id }),
+  },
+  {
     channelName: 'financial-transactions-add',
     invocationName: 'addFinancialTransactions',
     setupMainHandler: (database: Database) =>
