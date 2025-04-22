@@ -8,15 +8,40 @@ type SearchOptionsProps = {
   selectedCategoryId: number | null;
 };
 
+const getOptions = (
+  categories: FinancialTransactionCategory[],
+  selectedCategoryId: number | null
+) => {
+  if (selectedCategoryId !== null) {
+    const selectedOptions: string[] = [];
+    const options: string[] = [];
+
+    categories.forEach(({ data: { id }, path }) => {
+      if (id === selectedCategoryId) {
+        selectedOptions.push(path);
+      } else {
+        options.push(path);
+      }
+    });
+
+    return [
+      ...selectedOptions,
+      '(Decategorise)',
+      ...options,
+    ];
+  }
+  
+  return ['(Uncategorised)', ...categories.map(({ path }) => path)];
+};
+
 export const TransactionCategoriesSearchOptions = ({
   handleCategoryChange,
-  // selectedCategoryId
+  selectedCategoryId
 }: SearchOptionsProps) => {
-  // TODO: Highlight already selected option somehow?
   // TODO: Clearly indicate loading of categories.
   // TODO: Clearly indicate when an error occurs.
   const { categories } = useTransactionCategories();
-  const options = useMemo(() => categories.map(({ path }) => path), [categories]);
+  const options = useMemo(() => getOptions(categories, selectedCategoryId), [categories, selectedCategoryId]);
   const handleChange = (_: React.SyntheticEvent, value: string | undefined) => {
     const category = categories.find(({ path }) => path === value);
     handleCategoryChange(category);

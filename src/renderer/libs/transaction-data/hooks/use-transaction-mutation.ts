@@ -3,22 +3,26 @@ import { usePreloadIPC } from "../../../../renderer/shared/preload-ipc-context";
 
 export const useTransactionMutation = () => {
   const [error, setError] = useState<Error | undefined>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isMutating, setIsMutating] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const {
     updateFinancialTransaction,
   } = usePreloadIPC();
 
   const mutateTransaction = (id: number, categoryId: number | undefined) => {
     setError(undefined);
-    setIsLoading(true);
+    setIsMutating(true);
+    setIsSuccess(false);
     updateFinancialTransaction(id, categoryId)
+      .then(() => setIsSuccess(true))
       .catch((error) => setError(error))
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsMutating(false));
   };
 
   return {
     error,
-    isLoading,
+    isMutating,
+    isSuccess,
     mutateTransaction,
   }
 };

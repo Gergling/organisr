@@ -37,7 +37,7 @@ const Control = ({
     <>
       <TransactionCategoriesSearchOptions
         handleCategoryChange={handleCategoryChange}
-        selectedCategoryId={categoryId}
+        selectedCategoryId={selectedCategoryId}
       />
       <Button onClick={handleDone}>Done</Button>
       <Button onClick={onCancel}>Cancel</Button>
@@ -56,6 +56,8 @@ const Row = ({
   net,
 }: RowProps) => {
   const {
+    isMutating,
+    isSuccess,
     mutateTransaction,
   } = useTransactionMutation();
   const {
@@ -74,7 +76,7 @@ const Row = ({
 
     return getCategoryName(categoryName);
   }, [categoryName, transaction?.categoryName]);
-  const [updatedCategoryId, setUpdatedCategoryId] = useState<undefined | CategoryId>();
+  const [updatedCategoryId, setUpdatedCategoryId] = useState<CategoryId>(category_id);
   const handleClose = () => handleEditState(false);
   const handleOpenCategorisationControl = () => handleEditState(true);
   const handleUpdateCategory = (categoryId: CategoryId) => {
@@ -84,10 +86,10 @@ const Row = ({
   };
 
   useEffect(() => {
-    if(updatedCategoryId !== undefined) {
+    if(!isMutating && isSuccess) {
       fetchTransaction(id);
     }
-  }, [id, updatedCategoryId]);
+  }, [id, isMutating, isSuccess]);
 
   return (
     <TableRow>
@@ -98,7 +100,7 @@ const Row = ({
         {(
           edit
           ? <Control
-              categoryId={category_id}
+              categoryId={updatedCategoryId}
               onCancel={handleClose}
               onDone={handleUpdateCategory}
               transactionId={id}
