@@ -3,5 +3,6 @@ import { FinancialTransactionCategoriesModelProps } from "./types";
 import { financialTransactionCategoriesDatabaseTableConfig } from "./config";
 
 export const insertFinancialTransactionCategories = getInsertFactory<
-  Omit<FinancialTransactionCategoriesModelProps, 'id'>
+  FinancialTransactionCategoriesModelProps,
+  'id'
 >(financialTransactionCategoriesDatabaseTableConfig);

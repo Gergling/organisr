@@ -1,35 +1,7 @@
 import { useEffect, useState } from "react";
-import { FinancialTransactionCategoriesModelProps } from "../../../../database/financial";
 import { usePreloadIPC } from "../../../shared/preload-ipc-context";
 import { FinancialTransactionCategory } from "../types";
-
-const getCategoryPath = (
-  { parent_id, name }: FinancialTransactionCategoriesModelProps,
-  categories: FinancialTransactionCategoriesModelProps[],
-): string => {
-  if (parent_id) {
-    const parentCategory = categories.find(({ id }) => id === parent_id);
-    if (parentCategory) {
-      return [getCategoryPath(parentCategory, categories), name].join('/');
-    } else {
-      throw new Error('Somehow this category has a parent id for a category that does not exist. That should not be able to happen.');
-    }
-  }
-
-  return name;
-};
-
-const compareCategories = (
-  a: FinancialTransactionCategory,
-  b: FinancialTransactionCategory
-) => a.path.localeCompare(b.path);
-
-const getCategories = (
-  categories: FinancialTransactionCategoriesModelProps[]
-) => categories.map((data) => ({
-  data,
-  path: getCategoryPath(data, categories)
-})).sort(compareCategories);
+import { getCategories } from "../utils";
 
 export const useTransactionCategories = () => {
   const [categories, setCategories] = useState<FinancialTransactionCategory[]>([]);
@@ -53,7 +25,7 @@ export const useTransactionCategories = () => {
   }, []);
 
   return {
-    addFinancialTransactionCategories,
+    create: addFinancialTransactionCategories,
     update: updateFinancialTransactionCategory,
     categories,
     isLoading,

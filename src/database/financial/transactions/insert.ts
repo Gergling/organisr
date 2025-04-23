@@ -1,7 +1,8 @@
 import { getInsertFactory } from "../../shared";
-import { FinancialTransactionModelInsertionProps } from "./types";
+import { FinancialTransactionsModelProps } from "./types";
 import { financialTransactionsDatabaseTableConfig } from "./config";
 
 export const insertFinancialTransactions = getInsertFactory<
-  FinancialTransactionModelInsertionProps
+  FinancialTransactionsModelProps,
+  'id'
 >(financialTransactionsDatabaseTableConfig);

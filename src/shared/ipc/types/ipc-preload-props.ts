@@ -17,7 +17,7 @@ export type IPCRendererExposedProps = {
   updateFinancialTransaction: (transactionId: number, categoryId: number | undefined) => Promise<void>;
 
   addFinancialTransactionCategories: (categories: FinancialTransactionCategoriesModelInsertionProps[]) =>
-    Promise<IPCMutationResponse>;
+    Promise<FinancialTransactionCategoriesModelProps[]>;
   deleteFinancialTransactionCategory: (id: number) => Promise<IPCMutationResponse>;
   fetchFinancialTransactionCategories: () => Promise<FinancialTransactionCategoriesModelProps[]>;
   updateFinancialTransactionCategory: (category: FinancialTransactionCategoriesModelProps) =>

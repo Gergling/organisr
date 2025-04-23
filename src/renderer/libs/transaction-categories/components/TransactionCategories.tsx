@@ -1,11 +1,11 @@
-import { Box, Button, Modal } from "@mui/material";
+import { Button } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useTransactionCategories } from "../hooks";
 import {
   FinancialTransactionCategoriesModelInsertionProps,
   FinancialTransactionCategoriesModelProps
 } from "../types";
-import { EditCategory } from "./EditCategory";
+import { EditCategoryModal } from "./EditCategoryModal";
 
 type ModalState = {
   type: 'closed' | 'create',
@@ -14,22 +14,10 @@ type ModalState = {
   categoryId: number;
 };
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 export const TransactionCategories = () => {
   const [modalState, setModalState] = useState<ModalState>({ type: 'closed' });
   const {
-    addFinancialTransactionCategories,
+    create,
     update,
     categories,
     refetch,
@@ -53,7 +41,7 @@ export const TransactionCategories = () => {
       if (!categoryData.forInsertion) {
         await update(categoryData);
       } else {
-        await addFinancialTransactionCategories([categoryData]);
+        await create([categoryData]);
       }
     } catch (e) {
       console.error(e);
@@ -65,19 +53,13 @@ export const TransactionCategories = () => {
 
   return (
     <>
-      <Modal
+      <EditCategoryModal
+        categories={categories}
+        categoryId={categoryId}
         open={modalOpen}
-        onClose={handleModalClose}
-      >
-        <Box sx={style} component="form">
-          <EditCategory
-            categoryId={categoryId}
-            categories={categories}
-            onCancel={handleModalClose}
-            onSave={handleSave}
-          />
-        </Box>
-      </Modal>
+        onCancel={handleModalClose}
+        onSave={handleSave}
+      />
       <Button onClick={handleModalCreate}>Create</Button>
       <div>
         {categories.length === 0

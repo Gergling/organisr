@@ -4,16 +4,18 @@ import { getTableConfigFieldNames } from "./get-fields";
 
 export const getInsertFactory = <
   Model,
+  PrimaryKey extends keyof Model,
 >(
   { name, fields }: TableConfigProps<Model>,
 ) => {
-  const { fieldNames } = getTableConfigFieldNames<Model>(fields);
+  type InsertionModel = Omit<Model, PrimaryKey>;
+  const { fieldNames } = getTableConfigFieldNames<InsertionModel>(fields);
 
   return (
     database: Database,
-    data: Model[],
+    data: InsertionModel[],
   ) => {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<Model[]>((resolve, reject) => {
       if (data.length === 0) {
         reject({
           message: 'There is no data in this insertion request... what did you think this would do?',
@@ -28,7 +30,7 @@ export const getInsertFactory = <
         .reduce((values, category) => {
           // This ensures the values are in the same order as the fields.
           const transactionRowData = fieldNames
-            .map((fieldName) => category[fieldName as keyof Model]);
+            .map((fieldName) => category[fieldName as keyof InsertionModel]);
           return [
             ...values,
             ...transactionRowData,
@@ -37,10 +39,11 @@ export const getInsertFactory = <
       const statementSQL = `
         INSERT INTO ${name} (${fieldNames.join(', ')})
         VALUES ${preparedStatementQuery}
+        RETURNING *
       `;
       const statement = database.prepare(statementSQL);
 
-      statement.run(preparedStatementValues, (error) => {
+      statement.all<Model>(preparedStatementValues, (error, rows) => {
         if (error) {
           console.error(error);
           reject({
@@ -49,7 +52,7 @@ export const getInsertFactory = <
           });
         }
 
-        resolve();
+        resolve(rows);
       });
     });
   };

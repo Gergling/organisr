@@ -12,6 +12,7 @@ type Model = FinancialTransactionCategoriesModelProps |
 type EditCategoryProps = {
   categories: FinancialTransactionCategory[];
   categoryId?: number;
+  initialCategoryName?: string;
   onCancel: () => void;
   onSave: (categoryData: Model) => void;
 };
@@ -19,10 +20,11 @@ type EditCategoryProps = {
 export const EditCategory = ({
   categories,
   categoryId,
+  initialCategoryName = '',
   onCancel,
   onSave,
 }: EditCategoryProps) => {
-  const [categoryName, setCategoryName] = useState('');
+  const [categoryName, setCategoryName] = useState(initialCategoryName);
   const category = useMemo(
     () => categoryId ? categories.find(getCategoryFindFactory(categoryId)) : undefined,
     [categories, categoryId]

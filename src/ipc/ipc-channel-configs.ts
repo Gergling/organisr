@@ -13,6 +13,9 @@ import {
   updateFinancialTransactionCategory
 } from "../database/financial/transaction-categories";
 
+// TODO: Attempt to force configs to include all props.
+// Perhaps this should be an object where we iterate the entries for the factory functions.
+// That way any missing functions would be immediately obvious.
 export const ipcChannelConfigs: IPCChannelConfigProps[] = [
   {
     channelName: 'ipc-test',

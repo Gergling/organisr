@@ -18,6 +18,7 @@ type ForeignValueProps = {
 
 export type FinancialTransactionsModelProps = PrimaryKeyProps & ValueProps;
 
+// TODO: We don't actually use Partial<PrimaryKeyProps> right now. We don't need this. We never needed this.
 export type FinancialTransactionModelInsertionProps = Partial<PrimaryKeyProps> & ValueProps;
 
 export type FinancialTransactionModelFetchMappingProps = FinancialTransactionsModelProps & ForeignValueProps;
