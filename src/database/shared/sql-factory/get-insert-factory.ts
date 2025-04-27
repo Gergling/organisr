@@ -1,6 +1,6 @@
 import { Database } from "sqlite3";
-import { TableConfigProps } from "./types";
-import { getTableConfigFieldNames } from "./get-fields";
+import { TableConfigProps } from "../types";
+import { getTableConfigFieldNames } from "../get-fields";
 
 export const getInsertFactory = <
   Model,

@@ -1,6 +1,6 @@
 import { Database } from "sqlite3";
-import { TableConfigProps } from "./types";
-import { getTableConfigFieldNames } from "./get-fields";
+import { TableConfigProps } from "../types";
+import { getTableConfigFieldNames } from "../get-fields";
 
 type ForeignFieldSelectMapping = {
   alias: string;
@@ -128,6 +128,7 @@ export const getSelectFactory = <Model, Mapping>(
   const getStatementQuery = (data: Partial<Model>) => Object.keys(data)
     .map((fieldName) => `${tableConfig.name}.${fieldName} = ?`);
 
+  // TODO: The sql variable is hoisted WRONG.
   const getStatementComponents = (whereCriteria?: Partial<Model>) => {
     if (whereCriteria) {
       const whereStatementQuery = getStatementQuery(whereCriteria).join(' AND ');

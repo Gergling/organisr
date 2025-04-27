@@ -9,6 +9,7 @@ import { IPCMutationResponse } from "./";
 
 export type IPCRendererExposedProps = {
   ipcTest: (message: string) => Promise<string>;
+  dangerouslyExposedSQLInjector: (sql: string) => Promise<{ [key: string]: string }[]>;
 
   addFinancialTransactions: (transactions: FinancialTransactionsModelProps[]) =>
     Promise<IPCMutationResponse>;

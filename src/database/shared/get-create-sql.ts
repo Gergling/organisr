@@ -22,12 +22,14 @@ const getFieldsSQL = (
 
   foreignKeys.forEach(({
     foreignTable,
-    foreignTableFieldName,
+    foreignTableKeyFieldName,
     localFieldName,  
   }) => {
+    // TODO: May need to make the SET NULL more flexible at some point.
     foreignKeySQL.push(`
       FOREIGN KEY (${localFieldName})
-      REFERENCES ${foreignTable} (${foreignTableFieldName})
+      REFERENCES ${foreignTable} (${foreignTableKeyFieldName})
+      ON DELETE SET NULL
     `);
   });
 

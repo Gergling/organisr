@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { useMemo, useState } from "react";
-import { useTransactionCategories } from "../hooks";
+import { useTransactionCategories, useTransactionCategoryDelete } from "../hooks";
 import {
   FinancialTransactionCategoriesModelInsertionProps,
   FinancialTransactionCategoriesModelProps
@@ -16,17 +16,32 @@ type ModalState = {
 
 export const TransactionCategories = () => {
   const [modalState, setModalState] = useState<ModalState>({ type: 'closed' });
+
   const {
-    create,
-    update,
     categories,
+    create,
     refetch,
+    update,
+    // TODO: This should probably be multiple separate hooks, clearly labelled with CRUD operations
+    // and that way we can have a hook which manages the state of this component.
   } = useTransactionCategories();
+  const { remove } = useTransactionCategoryDelete();
   const modalOpen = useMemo(() => modalState.type !== 'closed', [modalState]);
   const categoryId: number | undefined = useMemo(
     () => modalState.type === 'edit' ? modalState.categoryId : undefined,
     [modalState]
   );
+
+  const handleDeleteFactory = (categoryId: number) => async () => {
+    console.log('handleDeleteFactory', categoryId)
+    try {
+      await remove(categoryId);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+    refetch();
+  };
 
   const handleModalClose = () => setModalState({ type: 'closed' });
   const handleModalCreate = () => setModalState({ type: 'create' });
@@ -78,6 +93,7 @@ export const TransactionCategories = () => {
                   {parent_id}:
                   {path}
                   <Button onClick={handleModalEditFactory(id)}>Edit</Button>
+                  <Button onClick={handleDeleteFactory(id)}>Delete</Button>
                 </li>
               ))}
             </ul>

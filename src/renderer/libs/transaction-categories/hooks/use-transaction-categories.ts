@@ -7,7 +7,7 @@ export const useTransactionCategories = () => {
   const [categories, setCategories] = useState<FinancialTransactionCategory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
-    addFinancialTransactionCategories,
+    addFinancialTransactionCategories, // TODO: This is duplicated.
     fetchFinancialTransactionCategories,
     updateFinancialTransactionCategory,
   } = usePreloadIPC();

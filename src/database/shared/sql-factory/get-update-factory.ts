@@ -1,5 +1,5 @@
 import { Database } from "sqlite3";
-import { TableConfigProps } from "./types";
+import { TableConfigProps } from "../types";
 
 export const getUpdateFactory = <
   Model,

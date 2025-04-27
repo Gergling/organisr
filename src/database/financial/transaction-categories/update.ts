@@ -1,4 +1,4 @@
-import { getUpdateFactory } from "../../shared/get-update-factory";
+import { getUpdateFactory } from "../../shared/sql-factory/get-update-factory";
 import { financialTransactionCategoriesDatabaseTableConfig } from "./config";
 import { FinancialTransactionCategoriesModelProps } from "./types";
 
