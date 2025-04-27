@@ -11,7 +11,7 @@ export const setupIPCRendererInvocations = (ipcRenderer: IpcRenderer) => {
           ipcRenderer.invoke(channelName, ...args),
       }
     },
-    // TODO: I hate it. https://github.com/Gergling/organiser/issues/28
+    // TODO: I hate it.
     {} as IPCRendererExposedProps
   );
 }

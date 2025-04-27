@@ -1,5 +1,6 @@
 import { AnalyticsView } from "../libs/analytics";
 import { TransactionBreakdown } from "../libs/transaction-breakdown";
+import { TransactionCategories } from "../libs/transaction-categories";
 import { TransactionFileUpload } from "../libs/transaction-file-upload";
 import { TransactionManagerView } from "../libs/transaction-manager";
 import { TransactionManagerGDrive } from "../libs/transaction-manager-gdrive";
@@ -52,6 +53,11 @@ export const routing = getRouting({
                 },
               ],
             },
+          },
+          {
+            element: <TransactionCategories />,
+            path: 'categories',
+            tabText: 'Categories',
           },
           {
             element: <AnalyticsView />,

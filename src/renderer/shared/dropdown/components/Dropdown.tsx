@@ -1,16 +1,21 @@
 import { ArrowDropDown } from "@mui/icons-material";
 import { Button, ButtonGroup, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type DropdownProps = {
+  initialSelectedIndex?: number;
   onSelect: (selectedIndex: number) => void;
   options: string[];
 };
 
-export const Dropdown = ({ onSelect, options }: DropdownProps) => {
+export const Dropdown = ({
+  onSelect,
+  options,
+  initialSelectedIndex,
+}: DropdownProps) => {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const handleClick = () => {
     console.info(`You clicked ${options[selectedIndex]}`);
@@ -39,6 +44,12 @@ export const Dropdown = ({ onSelect, options }: DropdownProps) => {
 
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (initialSelectedIndex !== undefined) {
+      setSelectedIndex(initialSelectedIndex);
+    }
+  }, [initialSelectedIndex]);
 
   return (
     <>

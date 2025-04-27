@@ -1,6 +1,6 @@
 import { DatasetType } from '@mui/x-charts/internals';
 import { LineChart, LineChartProps } from '@mui/x-charts/LineChart';
-import { FinancialTransactionModelProps } from '../../../../database/financial/transactions';
+import { FinancialTransactionsModelProps } from '../../../../database/financial/transactions';
 import { getMonthlyAccountNetsAggregation } from '../utils';
 import { useQueryTransactions } from '../../transaction-data';
 
@@ -23,7 +23,7 @@ const customize = {
 };
 
 const useMonthlyGrowthChart = (
-  transactions: FinancialTransactionModelProps[]
+  transactions: FinancialTransactionsModelProps[]
 ): LineChartProps => {
   const accounts: string[] = [...new Set(transactions.map(({ account_temporary }) => account_temporary))];
   const monthlyData = getMonthlyAccountNetsAggregation(transactions);

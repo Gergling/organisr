@@ -1,7 +1,7 @@
 import { parse } from "papaparse";
 import { useEffect, useState } from "react";
 import { usePreloadIPC } from "../../../shared/preload-ipc-context/use-preload-ipc";
-import { FinancialTransactionModelProps } from "../../../../database/financial/transactions";
+import { FinancialTransactionsModelProps } from "../../../../database/financial/transactions";
 
 type CSVProps = {
   [columnName: string]: string;
@@ -9,7 +9,7 @@ type CSVProps = {
 
 const getTransactionFromHalifaxCurrent = (
   csvTransaction: CSVProps,
-): FinancialTransactionModelProps => {
+): FinancialTransactionsModelProps => {
   // TODO: Ultimately will want to loop a "checklist" of signature headers for the
   // CSV before we get to this function so we can confirm the data maps properly.
   // There is a github issue somewhere for this.
@@ -27,7 +27,7 @@ const getTransactionFromHalifaxCurrent = (
     'Transaction Type',
   ].map((fieldName) => `${fieldName}:${csvTransaction[fieldName]}`).join(',')
 
-  const transaction: FinancialTransactionModelProps = {
+  const transaction: FinancialTransactionsModelProps = {
     account_temporary, // TODO: Ensure security is good.
     date,
     description: csvTransaction['Transaction Description'],
