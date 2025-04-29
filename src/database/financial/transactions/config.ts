@@ -1,4 +1,5 @@
 import { getReferenceSchema, TableConfigForeignKeyProps, TableConfigProps } from "../../shared";
+import { FINANCIAL_ACCOUNTS_DATABASE_TABLE_NAME } from "../accounts";
 import { FINANCIAL_TRANSACTION_CATEGORIES_DATABASE_TABLE_NAME } from "../transaction-categories";
 import { FinancialTransactionCategoriesModelProps } from "../transaction-categories/types";
 import { FinancialTransactionsModelProps } from "./types";
@@ -14,6 +15,10 @@ export const FINANCIAL_TRANSACTIONS_DATABASE_TABLE_NAME = 'financial_transaction
 export const financialTransactionsDatabaseTableConfig: TableConfig = {
   fields: {
     account_temporary: 'TEXT', // Awful temporary solution until we get an accounts table.
+    account_id: {
+      nullable: true,
+      type: 'INTEGER',
+    },
     date: 'TEXT',
     description: 'TEXT',
     id: {
@@ -33,6 +38,12 @@ export const financialTransactionsDatabaseTableConfig: TableConfig = {
       foreignTableKeyFieldName: 'id',
       foreignTableSelectFieldNames: ['name'],
       localFieldName: 'category_id',
+    }),
+    getReferenceSchema<TableConfigCategoryReference>({
+      foreignTable: FINANCIAL_ACCOUNTS_DATABASE_TABLE_NAME,
+      foreignTableKeyFieldName: 'id',
+      foreignTableSelectFieldNames: ['name'],
+      localFieldName: 'account_id',
     })
   ],
   name: FINANCIAL_TRANSACTIONS_DATABASE_TABLE_NAME,

@@ -1,3 +1,4 @@
+import { AccountsView } from "../libs/accounts";
 import { AnalyticsView } from "../libs/analytics";
 import { TransactionBreakdown } from "../libs/transaction-breakdown";
 import { TransactionCategories } from "../libs/transaction-categories";
@@ -24,6 +25,11 @@ export const routing = getRouting({
             element: <>Oh! Ver view.</>,
             path: 'overview',
             tabText: 'Overview',
+          },
+          {
+            element: <AccountsView />,
+            path: 'accounts',
+            tabText: 'Accounts',
           },
           {
             element: <TransactionManagerView />,

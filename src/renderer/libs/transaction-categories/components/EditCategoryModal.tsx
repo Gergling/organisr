@@ -1,10 +1,10 @@
-import { Box, Modal } from "@mui/material"
-import { EditCategory } from "./EditCategory";
-import { FinancialTransactionCategory } from "../types";
 import {
   FinancialTransactionCategoriesModelInsertionProps,
   FinancialTransactionCategoriesModelProps
 } from "../../../../database/financial";
+import { Modal } from "../../../shared/modal";
+import { FinancialTransactionCategory } from "../types";
+import { EditCategory } from "./EditCategory";
 
 type Model = FinancialTransactionCategoriesModelProps |
   FinancialTransactionCategoriesModelInsertionProps;
@@ -18,18 +18,6 @@ type EditCategoryModalProps = {
   open: boolean;
 }
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 export const EditCategoryModal = ({
   categories,
   categoryId,
@@ -41,13 +29,11 @@ export const EditCategoryModal = ({
   open={open}
   onClose={onCancel}
 >
-  <Box sx={style} component="form">
-    <EditCategory
-      categoryId={categoryId}
-      categories={categories}
-      initialCategoryName={initialCategoryName}
-      onCancel={onCancel}
-      onSave={onSave}
-    />
-  </Box>
+  <EditCategory
+    categoryId={categoryId}
+    categories={categories}
+    initialCategoryName={initialCategoryName}
+    onCancel={onCancel}
+    onSave={onSave}
+  />
 </Modal>;

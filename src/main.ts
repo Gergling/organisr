@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import { getDatabaseInstance } from './database';
+import { setupDatabase } from './database';
 import { setupIPCMainHandlers } from './ipc/setup-ipc-main-handlers';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -28,28 +28,29 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  // TODO: Primarily for testing. User will probably want to customise, which we can keep in the database.
+  mainWindow.maximize();
+  // mainWindow.minimize();
 };
 
 const dbPath = path.join(app.getPath('userData'), 'organiserdb.sqlite3');
 
-const databaseWrapper = getDatabaseInstance(dbPath);
-
-// Start the setup.
-
-databaseWrapper.init().then(() => {
-  console.log('Database initiated at', databaseWrapper.path)
-  databaseWrapper
-    .runSetupQueries()
+setupDatabase(dbPath).then(({ createTables, database }) => {
+  console.log('Database initiated at', dbPath)
+  createTables()
     .then(() => {
-      console.log('Setup queries done.')
+      console.log('Tables created.')
     })
     .catch((error) => {
       console.error('Database setup error');
       console.error(error);
     });
-}).catch((err) => console.error('Database opening error: ', err));
 
-setupIPCMainHandlers(databaseWrapper.database);
+  setupIPCMainHandlers(database);
+});
+
+// TODO: Consider wrapping these "app" functions in a setup function somewhere.
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

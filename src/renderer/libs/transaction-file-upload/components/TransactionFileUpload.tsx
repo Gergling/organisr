@@ -7,9 +7,11 @@ type CSVProps = {
   [columnName: string]: string;
 };
 
+type UploadModel = Omit<FinancialTransactionsModelProps, 'id'>;
+
 const getTransactionFromHalifaxCurrent = (
   csvTransaction: CSVProps,
-): FinancialTransactionsModelProps => {
+): UploadModel => {
   // TODO: Ultimately will want to loop a "checklist" of signature headers for the
   // CSV before we get to this function so we can confirm the data maps properly.
   // There is a github issue somewhere for this.
@@ -27,8 +29,10 @@ const getTransactionFromHalifaxCurrent = (
     'Transaction Type',
   ].map((fieldName) => `${fieldName}:${csvTransaction[fieldName]}`).join(',')
 
-  const transaction: FinancialTransactionsModelProps = {
+  const transaction: UploadModel = {
+    account_id: null,
     account_temporary, // TODO: Ensure security is good.
+    category_id: null,
     date,
     description: csvTransaction['Transaction Description'],
     meta,
@@ -43,7 +47,6 @@ export const TransactionFileUpload = () => {
   const {
     addFinancialTransactions,
     fetchFinancialTransactions,
-    ipcTest,
   } = usePreloadIPC();
 
   const handlePickFiles = (e: React.SyntheticEvent) => {
@@ -52,7 +55,6 @@ export const TransactionFileUpload = () => {
   };
 
   useEffect(() => {
-    ipcTest('IPC test run from file upload').then(console.log).catch(console.error);
     fetchFinancialTransactions().then((response) => console.log('newly fetched transactions', response)).catch(console.error);
   }, []);
 
@@ -95,6 +97,7 @@ export const TransactionFileUpload = () => {
           onChange={handlePickFiles}
         />
       </div>
+      <div>When the file is populated and before upload, choose an account to associate.</div>
       <div>Transaction list from the database.</div>
     </>
   );

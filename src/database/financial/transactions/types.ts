@@ -4,6 +4,7 @@ type PrimaryKeyProps = {
 
 type ValueProps = {
   account_temporary: string;
+  account_id: number | null;
   category_id: number | null;
   date: string;
   description: string;
