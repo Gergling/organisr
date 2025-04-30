@@ -9,11 +9,8 @@ export const useTransactionListTableRow = ({
   category_id,
   categoryName,
   date,
-  // description,
-  // edit,
   handleEditState,
   id,
-  // net,
 }: TransactionListTableRowProps) => {
   const {
     isMutating,

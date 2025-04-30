@@ -13,8 +13,12 @@ export const deleteFinancialAccount = (
     database,
     statementSQL,
     preparedStatementValues,
-    ({ statement }) => statement.run(
-      preparedStatementValues
+    ({ executionCallback, resolve, statement }) => statement.run(
+      preparedStatementValues,
+      (error) => {
+        executionCallback(error);
+        resolve();
+      }
     ),
   );
 };

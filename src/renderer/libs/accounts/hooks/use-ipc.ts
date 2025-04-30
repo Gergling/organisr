@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { FinancialAccountsModelProps } from "../../../../database/financial";
 import { usePreloadIPC } from "../../../shared/preload-ipc-context";
 import { FinancialAccountsModelValueProps } from "../types";
@@ -11,16 +12,19 @@ export const useAccountsIPC = () => {
     updateFinancialAccounts,
   } = usePreloadIPC();
 
+  const fetchAllQueryOptions = { queryKey: ['list-financial-accounts'] };
+
   const { data: allAccounts, refetch: refetchAllAccounts, isFetching } = useQuery({
-    queryKey: ['list-financial-accounts'],
     queryFn: listFinancialAccounts,
-  })
+    ...fetchAllQueryOptions,
+  });
+
   const { mutate: create, isPending: isCreating } = useMutation({
     mutationFn: (account: FinancialAccountsModelValueProps) =>
       createFinancialAccounts([account]).then(() => refetchAllAccounts()),
   });
   const { mutate: remove, isPending: isDeleting } = useMutation({
-    mutationFn: (accountId: number) =>
+    mutationFn: (accountId: number) => 
       deleteFinancialAccounts(accountId).then(() => refetchAllAccounts()),
   });
   const { mutate: update, isPending: isUpdating } = useMutation({
@@ -28,7 +32,10 @@ export const useAccountsIPC = () => {
       updateFinancialAccounts(account).then(() => refetchAllAccounts()),
   });
 
-  const isPending = isFetching || isCreating || isDeleting || isUpdating;
+  const isPending = useMemo(
+    () => isFetching || isCreating || isDeleting || isUpdating,
+    [isFetching, isCreating, isDeleting, isUpdating]
+  );
 
   return {
     allAccounts,

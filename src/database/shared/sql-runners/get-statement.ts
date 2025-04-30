@@ -1,9 +1,9 @@
 import { Database, Statement } from "sqlite3";
 
 type ExecutionCallback = (error: Error | null, ...args: unknown[]) => void;
-type HandlerFactory = <ResponseType>(props: {
+type HandlerFactory<PromiseType> = (props: {
   executionCallback: ExecutionCallback;
-  resolve: (value: ResponseType | PromiseLike<ResponseType>) => void;
+  resolve: (value: PromiseType | PromiseLike<PromiseType>) => void;
   statement: Statement;
 }) => unknown;
 
@@ -12,7 +12,7 @@ export const getStatement = <ResponseType>(
   database: Database,
   sql: string,
   params: unknown,
-  handlerFactory: HandlerFactory,
+  handlerFactory: HandlerFactory<ResponseType>,
 ) => new Promise<ResponseType>((resolve, reject) => {
   const statement = database.prepare(sql, (error) => {
     if (error) {
