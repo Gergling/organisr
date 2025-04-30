@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Button, Table, TableBody, TableCell, TableRow } from "@mui/material";
 import { FinancialTransactionModelFetchMappingProps } from "../../../../database/financial";
 import { FinancialTransactionCategory, TransactionCategoriesSearchOptions } from "../../transaction-categories";
-import { useTransactionMutation, useTransactionQuery } from "../../transaction-data";
+import { TransactionListTableRowProps } from "../types";
+import { useTransactionListTableRow } from "../hooks";
 
 type CategoryId = FinancialTransactionModelFetchMappingProps['category_id'];
 
@@ -11,11 +12,6 @@ type ControlProps = {
   onCancel: () => void;
   onDone: (categoryId: CategoryId) => void;
   transactionId: FinancialTransactionModelFetchMappingProps['id'];
-};
-
-type RowProps = FinancialTransactionModelFetchMappingProps & {
-  edit: boolean;
-  handleEditState: (state: boolean) => void;
 };
 
 type TableProps = {
@@ -45,51 +41,21 @@ const Control = ({
   );
 }
 
-const Row = ({
-  category_id,
-  categoryName,
-  date,
-  description,
-  edit,
-  handleEditState,
-  id,
-  net,
-}: RowProps) => {
+const Row = (props: TransactionListTableRowProps) => {
   const {
-    isMutating,
-    isSuccess,
-    mutateTransaction,
-  } = useTransactionMutation();
+    description,
+    edit,
+    id,
+    net,
+  } = props;
   const {
-    transaction,
-    fetchTransaction,
-  } = useTransactionQuery();
-  const dayOfMonth = useMemo(() => date.split('-')[2], [date]);
-  const buttonText = useMemo(() => {
-    const getCategoryName = (
-      dataCategoryName: FinancialTransactionModelFetchMappingProps['categoryName']
-    ) => dataCategoryName ? dataCategoryName : '(Uncategorised)';
-
-    if (transaction) {
-      return getCategoryName(transaction.categoryName);
-    }
-
-    return getCategoryName(categoryName);
-  }, [categoryName, transaction?.categoryName]);
-  const [updatedCategoryId, setUpdatedCategoryId] = useState<CategoryId>(category_id);
-  const handleClose = () => handleEditState(false);
-  const handleOpenCategorisationControl = () => handleEditState(true);
-  const handleUpdateCategory = (categoryId: CategoryId) => {
-    mutateTransaction(id, categoryId === null ? undefined : categoryId);
-    handleClose();
-    setUpdatedCategoryId(categoryId);
-  };
-
-  useEffect(() => {
-    if(!isMutating && isSuccess) {
-      fetchTransaction(id);
-    }
-  }, [id, isMutating, isSuccess]);
+    buttonText,
+    dayOfMonth,
+    handleClose,
+    handleOpenCategorisationControl,
+    handleUpdateCategory,
+    updatedCategoryId,
+  } = useTransactionListTableRow(props);
 
   return (
     <TableRow>

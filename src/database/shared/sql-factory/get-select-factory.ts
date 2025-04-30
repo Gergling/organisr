@@ -1,6 +1,6 @@
 import { Database } from "sqlite3";
-import { TableConfigProps } from "../types";
-import { getTableConfigFieldNames } from "../get-fields";
+import { DataRecord, TableConfigProps } from "../types";
+import { getSelectStatement } from "./get-select-statement";
 
 type ForeignFieldSelectMapping = {
   alias: string;
@@ -55,21 +55,14 @@ const getForeignValueSQLComponents = <Model>(
 const getSelectSQL = <Model>(
   tableConfig: TableConfigProps<Model>,
 ) => {
-  const { name: localTableName, fields } = tableConfig;
-  const { fieldNames, primaryKeys } = getTableConfigFieldNames<Model>(fields);
+  const { name: localTableName } = tableConfig;
   const {
     foreignValueFieldNames,
     foreignValueTableMappings,
     leftJoins,
   } = getForeignValueSQLComponents(tableConfig);
 
-  const selectSQL = [
-    [
-      ...primaryKeys,
-      ...fieldNames,
-    ].map((fieldName) => `${localTableName}.${fieldName.toString()}`),
-    ...foreignValueFieldNames,
-  ].join(', ');
+  const selectSQL = getSelectStatement<Model>(tableConfig, foreignValueFieldNames);
   const leftJoinSQL = leftJoins.join(' ');
 
   const sql = [
@@ -85,16 +78,6 @@ const getSelectSQL = <Model>(
 };
 
 type FlatRow<Model> = { [fieldName: string]: string } & Model;
-
-type DataRecord<Model> = {
-  local: Model;
-  joins: {
-    table: string;
-    fieldValues: {
-      [fieldName: string]: string;
-    };
-  }[];
-}
 
 type MapRowFunction<Model, Mapping> = (row: DataRecord<Model>) => Mapping;
 

@@ -5,4 +5,8 @@ export type FinancialAccountsModelProps = {
   name: string;
 };
 
+export type FinancialAccountsFetchProps = FinancialAccountsModelProps & {
+  count_transactions: number;
+};
+
 export type FinancialAccountsTableConfigProps = TableConfigProps<FinancialAccountsModelProps>;

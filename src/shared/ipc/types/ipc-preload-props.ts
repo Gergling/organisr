@@ -1,5 +1,6 @@
 import { IPC_EXPOSURE_PROPERTY_NAME } from "../../../ipc/ipc-constants";
 import {
+  FinancialAccountsFetchProps,
   FinancialAccountsModelProps,
   FinancialTransactionCategoriesModelInsertionProps,
   FinancialTransactionCategoriesModelProps,
@@ -29,7 +30,7 @@ export type IPCRendererExposedProps = {
 
   createFinancialAccounts: CreateFunction<FinancialAccountsModelProps, 'id'>;
   deleteFinancialAccounts: DeleteByPrimaryKeyFunction;
-  listFinancialAccounts: ListFunction<FinancialAccountsModelProps>;
+  listFinancialAccounts: ListFunction<FinancialAccountsFetchProps>;
   updateFinancialAccounts: UpdateFunction<FinancialAccountsModelProps>;
 
   addFinancialTransactions: CreateFunction<FinancialTransactionsModelProps, 'id'>;

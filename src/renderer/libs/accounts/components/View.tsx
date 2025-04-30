@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { FinancialAccountsModelProps } from "../../../../database/financial";
+import { FinancialAccountsFetchProps } from "../../../../database/financial";
 import { useAccountsIPC } from "../hooks";
 import { EditAccountModal } from "./EditModal";
 import { Button } from "@mui/material";
 import { FinancialAccountsModelValueProps } from "../types";
 
-const List = ({ accounts }: { accounts: FinancialAccountsModelProps[] }) => {
+const List = ({ accounts }: { accounts: FinancialAccountsFetchProps[] }) => {
   return (
     <ul>
-      {accounts.map(({ name }, i) => <li key={i}>{name}</li>)}
+      {accounts.map(({ count_transactions, name }, i) => <li key={i}>{name}: ({count_transactions} transactions)</li>)}
     </ul>
   )
 };
