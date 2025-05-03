@@ -1,5 +1,6 @@
 import { IPCCHannelConfigFactory } from "./types/ipc-channel-config-props";
 import {
+  FinancialTransactionModelValueProps,
   FinancialTransactionsModelProps,
   insertFinancialTransactions,
   selectFinancialTransactions,
@@ -68,8 +69,8 @@ export const ipcChannelConfigs: IPCCHannelConfigFactory = {
       () => selectFinancialTransactions(database),
   updateFinancialTransaction:
     ({ database }) =>
-      (_, id: number, category_id: number | undefined) =>
-        updateFinancialTransaction(database, { category_id }, { id }),
+      (_, id: number, data: Partial<FinancialTransactionModelValueProps>) => 
+        updateFinancialTransaction(database, data, { id }),
 
   addFinancialTransactionCategories:
     ({ database }) =>

@@ -20,8 +20,13 @@ type ListFunction<Model> = () => Promise<Model[]>;
 //   PrimaryKey extends keyof Model
 // > = (id: PrimaryKey) => Promise<Model>;
 
-type UpdateFunction<Model> = (
+type LegacyUpdateFunction<Model> = (
   model: Model
+) => Promise<void>;
+
+type UpdateFunction<Model, PrimaryKeyField extends keyof Model> = (
+  primaryKeyId: Model[PrimaryKeyField],
+  data: Partial<Omit<Model, PrimaryKeyField>> & { [fieldName in PrimaryKeyField]?: never; },
 ) => Promise<void>;
 
 export type IPCRendererExposedProps = {
@@ -31,18 +36,18 @@ export type IPCRendererExposedProps = {
   createFinancialAccounts: CreateFunction<FinancialAccountsModelProps, 'id'>;
   deleteFinancialAccounts: DeleteByPrimaryKeyFunction;
   listFinancialAccounts: ListFunction<FinancialAccountsFetchProps>;
-  updateFinancialAccounts: UpdateFunction<FinancialAccountsModelProps>;
+  updateFinancialAccounts: LegacyUpdateFunction<FinancialAccountsModelProps>;
 
   addFinancialTransactions: CreateFunction<FinancialTransactionsModelProps, 'id'>;
   fetchFinancialTransactions: ListFunction<FinancialTransactionModelFetchMappingProps>;
   fetchFinancialTransaction: (transactionId: number) => Promise<FinancialTransactionModelFetchMappingProps[]>;
-  updateFinancialTransaction: (transactionId: number, categoryId: number | undefined) => Promise<void>;
+  updateFinancialTransaction: UpdateFunction<FinancialTransactionsModelProps, 'id'>;
 
   addFinancialTransactionCategories: (categories: FinancialTransactionCategoriesModelInsertionProps[]) =>
     Promise<FinancialTransactionCategoriesModelProps[]>;
   deleteFinancialTransactionCategory: DeleteByPrimaryKeyFunction;
   fetchFinancialTransactionCategories: ListFunction<FinancialTransactionCategoriesModelProps>;
-  updateFinancialTransactionCategory: UpdateFunction<FinancialTransactionCategoriesModelProps>;
+  updateFinancialTransactionCategory: LegacyUpdateFunction<FinancialTransactionCategoriesModelProps>;
 };
 
 export type PreloadIPC = {

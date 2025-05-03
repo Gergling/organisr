@@ -1,59 +1,79 @@
-import { useEffect, useMemo, useState } from "react";
-import { useTransactionMutation, useTransactionQuery } from "../../transaction-data";
+import { useMemo, useState } from "react";
+import { useTransactionsIPC } from "../../transaction-data";
 import { TransactionListTableRowProps } from "../types";
-import { FinancialTransactionModelFetchMappingProps } from "../../../../database/financial";
+import { FinancialAccountsFetchProps, FinancialTransactionModelFetchMappingProps } from "../../../../database/financial";
+import { FinancialTransactionCategory } from "../../transaction-categories";
+import { useAccountsIPC } from "../../accounts";
 
 type CategoryId = FinancialTransactionModelFetchMappingProps['category_id'];
 
-export const useTransactionListTableRow = ({
-  category_id,
-  categoryName,
-  date,
-  handleEditState,
-  id,
-}: TransactionListTableRowProps) => {
+const getAccountOptions = (
+  accounts: FinancialAccountsFetchProps[],
+  selectedAccountId: number | null
+) => {
+  if (selectedAccountId !== null) {
+    const options: string[] = [];
+    const selectedOptions: string[] = [];
+
+    accounts.forEach(({ id, name }) => {
+      if (id === selectedAccountId) {
+        selectedOptions.push(name);
+      } else {
+        options.push(name);
+      }
+    });
+
+    return [
+      ...selectedOptions,
+      '(Disassociate Account)',
+      ...options,
+    ];
+  }
+  
+  return ['(Unaccounted)', ...accounts.map(({ name }) => name)];
+};
+
+export const useTransactionListTableRow = (props: TransactionListTableRowProps) => {
   const {
-    isMutating,
-    isSuccess,
-    mutateTransaction,
-  } = useTransactionMutation();
+    account_id,
+    category_id,
+    id,
+  } = props;
+
+  const { allAccounts } = useAccountsIPC();
+
   const {
     transaction,
-    fetchTransaction,
-  } = useTransactionQuery();
-  const dayOfMonth = useMemo(() => date.split('-')[2], [date]);
-  const buttonText = useMemo(() => {
-    const getCategoryName = (
-      dataCategoryName: FinancialTransactionModelFetchMappingProps['categoryName']
-    ) => dataCategoryName ? dataCategoryName : '(Uncategorised)';
+    update,
+  } = useTransactionsIPC();
 
-    if (transaction) {
-      return getCategoryName(transaction.categoryName);
-    }
-
-    return getCategoryName(categoryName);
-  }, [categoryName, transaction?.categoryName]);
-  const [updatedCategoryId, setUpdatedCategoryId] = useState<CategoryId>(category_id);
-  const handleClose = () => handleEditState(false);
-  const handleOpenCategorisationControl = () => handleEditState(true);
-  const handleUpdateCategory = (categoryId: CategoryId) => {
-    mutateTransaction(id, categoryId === null ? undefined : categoryId);
-    handleClose();
-    setUpdatedCategoryId(categoryId);
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(account_id);
+  const accountOptions = useMemo(
+    () => getAccountOptions(allAccounts || [], selectedAccountId),
+    [allAccounts, selectedAccountId]
+  );
+  const handleAccountChange = (_: React.SyntheticEvent, selectedAccountName: string | undefined) => {
+    const selectedAccount = allAccounts?.find(({ name }) => name === selectedAccountName);
+    const updatedAccountId = selectedAccount ? selectedAccount.id : null;
+    setSelectedAccountId(updatedAccountId);
   };
+  const handleUpdateAccount = () => update({ id, account_id: selectedAccountId });
 
-  useEffect(() => {
-    if(!isMutating && isSuccess) {
-      fetchTransaction(id);
-    }
-  }, [id, isMutating, isSuccess]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId>(category_id);
+  const handleChangeCategory = (category: FinancialTransactionCategory | undefined) => {
+    const category_id = category ? category.data.id : null;
+    setSelectedCategoryId(category_id);
+  };
+  const handleUpdateCategory = () => update({ id, category_id: selectedCategoryId });
 
   return {
-    buttonText,
-    dayOfMonth,
-    handleClose,
-    handleOpenCategorisationControl,
+    accountOptions,
+    handleAccountChange,
+    handleChangeCategory,
+    handleUpdateAccount,
     handleUpdateCategory,
-    updatedCategoryId,
+    selectedAccountId,
+    selectedCategoryId,
+    transaction: transaction || props,
   };
 }

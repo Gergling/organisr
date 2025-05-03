@@ -14,10 +14,14 @@ export const useAccountsIPC = () => {
 
   const fetchAllQueryOptions = { queryKey: ['list-financial-accounts'] };
 
-  const { data: allAccounts, refetch: refetchAllAccounts, isFetching } = useQuery({
+  const { data: allUnsortedAccounts, refetch: refetchAllAccounts, isFetching } = useQuery({
     queryFn: listFinancialAccounts,
     ...fetchAllQueryOptions,
   });
+  const allAccounts = useMemo(
+    () => allUnsortedAccounts?.sort((a, b) => a.name.localeCompare(b.name)),
+    [allUnsortedAccounts]
+  );
 
   const { mutate: create, isPending: isCreating } = useMutation({
     mutationFn: (account: FinancialAccountsModelValueProps) =>

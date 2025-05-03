@@ -2,7 +2,7 @@ type PrimaryKeyProps = {
   id: number;
 };
 
-type ValueProps = {
+export type FinancialTransactionModelValueProps = {
   account_temporary: string;
   account_id: number | null;
   category_id: number | null;
@@ -18,9 +18,6 @@ export type FinancialTransactionModelForeignValueProps = {
   categoryName: string | null;
 }
 
-export type FinancialTransactionsModelProps = PrimaryKeyProps & ValueProps;
-
-// TODO: We don't actually use Partial<PrimaryKeyProps> right now. We don't need this. We never needed this.
-export type FinancialTransactionModelInsertionProps = Partial<PrimaryKeyProps> & ValueProps;
+export type FinancialTransactionsModelProps = PrimaryKeyProps & FinancialTransactionModelValueProps;
 
 export type FinancialTransactionModelFetchMappingProps = FinancialTransactionsModelProps & FinancialTransactionModelForeignValueProps;

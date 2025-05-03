@@ -1,61 +1,42 @@
-import { useState } from "react";
-import { Button, Table, TableBody, TableCell, TableRow } from "@mui/material";
+import { Autocomplete, Table, TableBody, TableCell, TableRow, TextField } from "@mui/material";
+import { useMemo, useReducer } from "react";
 import { FinancialTransactionModelFetchMappingProps } from "../../../../database/financial";
-import { FinancialTransactionCategory, TransactionCategoriesSearchOptions } from "../../transaction-categories";
+import { TransactionCategoriesSearchOptions } from "../../transaction-categories";
 import { TransactionListTableRowProps } from "../types";
 import { useTransactionListTableRow } from "../hooks";
-
-type CategoryId = FinancialTransactionModelFetchMappingProps['category_id'];
-
-type ControlProps = {
-  categoryId: CategoryId;
-  onCancel: () => void;
-  onDone: (categoryId: CategoryId) => void;
-  transactionId: FinancialTransactionModelFetchMappingProps['id'];
-};
+import { Control } from "./Control";
 
 type TableProps = {
   transactions: FinancialTransactionModelFetchMappingProps[]
 };
 
-const Control = ({
-  categoryId,
-  onCancel,
-  onDone,
-}: ControlProps) => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<CategoryId>(categoryId);
-  const handleCategoryChange = (category: FinancialTransactionCategory | undefined) => {
-    const updatedCategoryId = category ? category.data.id : null;
-    setSelectedCategoryId(updatedCategoryId);
-  };
-  const handleDone = () => onDone(selectedCategoryId);
-  return (
-    <>
-      <TransactionCategoriesSearchOptions
-        handleCategoryChange={handleCategoryChange}
-        selectedCategoryId={selectedCategoryId}
-      />
-      <Button onClick={handleDone}>Done</Button>
-      <Button onClick={onCancel}>Cancel</Button>
-    </>
-  );
-}
-
 const Row = (props: TransactionListTableRowProps) => {
   const {
+    date,
     description,
-    edit,
-    id,
+    handleEditAccountState,
+    handleEditCategoryState,
+    isEditingAccount,
+    isEditingCategory,
     net,
   } = props;
+  const dayOfMonth = useMemo(() => date.split('-')[2], [date]);
   const {
-    buttonText,
-    dayOfMonth,
-    handleClose,
-    handleOpenCategorisationControl,
+    accountOptions,
+    handleAccountChange,
+    handleChangeCategory,
+    handleUpdateAccount,
     handleUpdateCategory,
-    updatedCategoryId,
+    selectedCategoryId,
+    transaction,
   } = useTransactionListTableRow(props);
+
+  const getAccountButtonText = (
+    { accountName }: FinancialTransactionModelFetchMappingProps
+  ) => accountName ? accountName : '(Unaccounted)';
+  const getCategoryButtonText = (
+    { categoryName }: FinancialTransactionModelFetchMappingProps
+  ) => categoryName ? categoryName : '(Uncategorised)';
 
   return (
     <TableRow>
@@ -63,16 +44,33 @@ const Row = (props: TransactionListTableRowProps) => {
       <TableCell>{net}</TableCell>
       <TableCell>{description}</TableCell>
       <TableCell>
-        {(
-          edit
-          ? <Control
-              categoryId={updatedCategoryId}
-              onCancel={handleClose}
-              onDone={handleUpdateCategory}
-              transactionId={id}
-            />
-          : <Button onClick={handleOpenCategorisationControl}>{buttonText || '(blank)'}</Button>
-        )}
+        <Control
+          getButtonText={getCategoryButtonText}
+          handleEditState={handleEditCategoryState}
+          isEditing={isEditingCategory}
+          onDone={handleUpdateCategory}
+          transaction={transaction}
+        >
+          <TransactionCategoriesSearchOptions
+            handleCategoryChange={handleChangeCategory}
+            selectedCategoryId={selectedCategoryId}
+          />
+        </Control>
+      </TableCell>
+      <TableCell>
+        <Control
+          getButtonText={getAccountButtonText}
+          handleEditState={handleEditAccountState}
+          isEditing={isEditingAccount}
+          onDone={handleUpdateAccount}
+          transaction={transaction}
+        >
+          <Autocomplete
+            onChange={handleAccountChange}
+            options={accountOptions}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Control>
       </TableCell>
     </TableRow>
   );
@@ -81,15 +79,34 @@ const Row = (props: TransactionListTableRowProps) => {
 export const TransactionListTable = ({
   transactions,
 }: TableProps) => {
-  const [editIDX, setEditIDX] = useState<number | null>(null);
-  const handleEditStateFactory = (idx: number) => (state: boolean) => setEditIDX(state ? idx : null);
+  type EditingProps = {
+    accountIDX?: number;
+    categoryIDX?: number;
+  }
+  type EditingReducer = (
+    state: EditingProps, value: Partial<EditingProps>
+  ) => EditingProps;
+  const [{
+    accountIDX,
+    categoryIDX,
+  }, dispatch] = useReducer<EditingReducer>((state, value) => ({
+    ...state,
+    ...value,
+  }), {});
+
+  const getEditStateHandler = (idx: number, key: keyof EditingProps) =>
+    (state: boolean) =>
+      dispatch({ [key]: state ? idx : undefined });
+
   return (
     <Table>
       <TableBody>
         {transactions.map((transaction, idx) => (
           <Row
-            edit={idx === editIDX}
-            handleEditState={handleEditStateFactory(idx)}
+            handleEditAccountState={getEditStateHandler(idx, 'accountIDX')}
+            handleEditCategoryState={getEditStateHandler(idx, 'categoryIDX')}
+            isEditingAccount={accountIDX === idx}
+            isEditingCategory={categoryIDX === idx}
             key={idx}
             { ...transaction }
           />
