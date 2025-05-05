@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { FinancialTransactionModelValueProps, FinancialTransactionsModelProps } from "../../../../database/financial";
 import { usePreloadIPC } from "../../../shared/preload-ipc-context";
 import { useMemo, useState } from "react";
+import { TransactionUploadModel } from "../../transaction-file-upload";
 
 type UpdateProps = Pick<FinancialTransactionsModelProps, 'id'>
   & Partial<FinancialTransactionModelValueProps>;
@@ -46,14 +47,20 @@ const useTransactionsIPCUpdate = () => {
 export const useTransactionsIPC = () => {
   const {
     // TODO: Figure out how this should integrate into the fetches and update.
-    // addFinancialTransactions,
+    addFinancialTransactions,
     fetchFinancialTransactions,
   } = usePreloadIPC();
   const { transaction, update } = useTransactionsIPCUpdate();
 
-  const { data: initialTransactions } = useQuery({
+  const { data: initialTransactions, refetch } = useQuery({
     queryFn: fetchFinancialTransactions,
     queryKey: ['list-financial-transactions'],
+  });
+  const { mutate: insert } = useMutation({
+    mutationFn: (newTransactionData: TransactionUploadModel[]) =>
+      addFinancialTransactions(newTransactionData).then(() => {
+        refetch();
+      }).catch(console.error)
   });
 
   const transactions = useMemo(
@@ -68,6 +75,7 @@ export const useTransactionsIPC = () => {
   );
 
   return {
+    insert,
     transaction,
     transactions,
     update,
