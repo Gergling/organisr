@@ -72,7 +72,6 @@ export const TransactionCategoriesSearchOptions = ({
   };
 
   useEffect(() => {
-    console.log('new categories', newCategories)
     if (newCategories && newCategories.length > 0) {
       const [newCategory] = newCategories;
       handleCategoryChange(newCategory);

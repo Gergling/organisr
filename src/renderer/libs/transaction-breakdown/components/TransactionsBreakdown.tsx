@@ -1,4 +1,4 @@
-import { useQueryTransactions } from "../../transaction-data"
+import { useTransactionsIPC } from "../../transaction-data"
 import { TransactionList } from "../../transaction-list";
 import { useTransactionBreakdown } from "../hooks";
 import { TransactionBreakdownFilterSelection } from "./FilterSelection";
@@ -8,11 +8,9 @@ import { TransactionBreakdownFilterSelection } from "./FilterSelection";
 // import { TransactionList } from "../../transaction-list";
 
 export const TransactionBreakdown = () => {
-  const { isLoading, transactions } = useQueryTransactions();
+  const { transactions } = useTransactionsIPC();
 
-  const breakdown = useTransactionBreakdown(transactions);
-
-  if (isLoading) return 'Loading...';
+  const breakdown = useTransactionBreakdown(transactions || []);
 
   return (
     <div>
