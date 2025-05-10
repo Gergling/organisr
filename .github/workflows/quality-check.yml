@@ -1,0 +1,20 @@
+name: Quality Check
+description: Run a quality check inside a job
+on:
+  workflow_call:
+    inputs:
+      cmd:
+        required: true
+        type: string
+
+jobs:
+  quality_check:
+    name: Quality Check
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+
+      - uses: borales/actions-yarn@v4
+        with:
+          cmd: ${{ inputs.cmd }}
